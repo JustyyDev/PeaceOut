@@ -7,14 +7,74 @@
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    html,body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);font-family:'Inter',sans-serif;margin:0;}
-    .container{max-width:650px;margin:4rem auto;background:#fff;border-radius:24px;box-shadow:0 6px 24px #40C9FF33;padding:2.5rem 2rem;}
-    .logo{width:64px;display:block;margin:0 auto 1.2rem;}
-    h1{text-align:center;color:#005C97;font-size:2.1rem;margin-bottom:1.5rem;}
-    .faq-item{margin-bottom:2.2rem;}
-    .faq-q{color:#40C9FF;font-size:1.2rem;font-weight:700;margin-bottom:0.3rem;}
-    .faq-a{color:#005C97;font-size:1.04rem;padding-left:0.5rem;}
-    @media (max-width:700px){.container{padding:1.1rem 0.5rem;}}
+    html,body{
+      background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);
+      font-family:'Inter',sans-serif;
+      margin:0;
+      min-height:100vh;
+    }
+    .container{
+      max-width:670px;
+      margin:4rem auto;
+      background:#fff;
+      border-radius:24px;
+      box-shadow:0 6px 24px #40C9FF33;
+      padding:2.7rem 2rem 2.3rem 2rem;
+    }
+    .logo{
+      width:64px;
+      display:block;
+      margin:0 auto 1.2rem;
+      filter: drop-shadow(0px 6px 24px #40C9FF22);
+    }
+    h1{
+      text-align:center;
+      color:#005C97;
+      font-size:2.1rem;
+      margin-bottom:2.2rem;
+      letter-spacing:-0.03em;
+    }
+    .faq-item{
+      margin-bottom:2.2rem;
+      background: #B8FFF933;
+      border-radius: 16px;
+      padding: 1.1em 1em 1.1em 1em;
+      box-shadow: 0 1px 8px #40C9FF11;
+      transition: box-shadow 0.13s;
+    }
+    .faq-item:hover {
+      box-shadow: 0 6px 24px #FF3CAC22;
+    }
+    .faq-q{
+      color:#40C9FF;
+      font-size:1.16rem;
+      font-weight:900;
+      margin-bottom:0.32rem;
+      letter-spacing: 0.01em;
+    }
+    .faq-a{
+      color:#005C97;
+      font-size:1.04rem;
+      padding-left:0.3rem;
+      line-height: 1.7;
+    }
+    .faq-a a {
+      color:#FF3CAC;
+      text-decoration:underline;
+      font-weight:600;
+    }
+    .brand {
+      text-align:center;
+      margin-top:2.6rem;
+      font-size:1.01em;
+      color:#40C9FF;
+      opacity:0.9;
+    }
+    @media (max-width:700px){
+      .container{padding:1.1rem 0.5rem;}
+      .faq-item{padding:0.9em 0.6em;}
+      h1{font-size:1.45rem;}
+    }
   </style>
 </head>
 <body>
@@ -23,27 +83,30 @@
     <h1>Frequently Asked Questions</h1>
     <div class="faq-item">
       <div class="faq-q">What is PeaceOut?</div>
-      <div class="faq-a">PeaceOut is a new kind of platform for video and live streaming. It aims for a peaceful, energetic, community-first vibe—think YouTube meets Twitch, but way more chill.</div>
+      <div class="faq-a">PeaceOut is a next-generation platform for video and live streaming. It’s a peaceful, energetic, community-first home for creators and viewers—think YouTube meets Twitch, but with more chill vibes.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">How do I upload a video or go live?</div>
-      <div class="faq-a">After creating an account and logging in, visit your dashboard to upload videos or get your stream key for OBS/live streaming.</div>
+      <div class="faq-a">After creating an account and logging in, click <b>Upload</b> in the navigation to upload videos. To go live, visit your dashboard for your stream key and connect via OBS or any compatible software.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Is PeaceOut free?</div>
-      <div class="faq-a">Yes! All core features are free. Some advanced features (like channel memberships or tips) may be added later as optional upgrades.</div>
+      <div class="faq-a">Yes! All core features are free. Optional paid upgrades like channel memberships or tipping may be added in the future.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">How do I report inappropriate content?</div>
-      <div class="faq-a">You can report videos or streams via the flag button below each video or by <a href="contact.html" style="color:#FF3CAC;">contacting us</a> directly.</div>
+      <div class="faq-a">You can report videos or streams using the flag button or by <a href="contact.html">contacting us</a> directly.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Can I customize my channel?</div>
-      <div class="faq-a">Absolutely! Update your profile info, avatar, and more from your profile settings. More customization features are coming soon.</div>
+      <div class="faq-a">Absolutely! Edit your profile info, avatar, and bio anytime. More channel customization features are coming soon.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">How do I get notified when creators go live?</div>
-      <div class="faq-a">Follow your favorite creators and enable notifications in your account settings. We’ll keep you updated!</div>
+      <div class="faq-a">Follow your favorite creators and enable notifications in your account settings. We’ll let you know whenever they go live or upload new content!</div>
+    </div>
+    <div class="brand">
+      PeaceOut &copy; 2025 • Relax, create, stream, and vibe together.
     </div>
   </div>
 </body>

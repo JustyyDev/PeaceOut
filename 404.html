@@ -7,22 +7,101 @@
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    html,body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);font-family:'Inter',sans-serif;margin:0;}
-    .container{max-width:400px;margin:8rem auto 0 auto;background:#fff;border-radius:24px;box-shadow:0 6px 24px #40C9FF33;padding:2.5rem 2rem;text-align:center;}
-    .logo{width:50px;display:block;margin:0 auto 1.2rem;}
-    h1{color:#FF3CAC;font-size:2.5rem;margin-bottom:0.7rem;}
-    p{color:#005C97;font-size:1.08rem;margin-bottom:1.6rem;}
-    a{background:linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);color:#fff;border-radius:22px;padding:0.7rem 1.7rem;font-weight:700;text-decoration:none;font-size:1.01rem;}
-    a:hover{box-shadow:0 6px 24px #FF3CAC33;}
-    @media (max-width:500px){.container{padding:1.2rem 0.5rem;}}
+    html,body{
+      background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);
+      font-family:'Inter',sans-serif;
+      margin:0;
+      min-height:100vh;
+    }
+    .container{
+      max-width:420px;
+      margin:8rem auto 0 auto;
+      background:#fff;
+      border-radius:24px;
+      box-shadow:0 6px 24px #40C9FF33;
+      padding:2.7rem 2rem 2.3rem 2rem;
+      text-align:center;
+      position:relative;
+      overflow:visible;
+    }
+    .logo{
+      width:56px;
+      display:block;
+      margin:0 auto 1.2rem;
+      filter: drop-shadow(0px 6px 24px #40C9FF33);
+    }
+    .peace-emoji {
+      font-size:3.2rem;
+      margin-bottom:1.2rem;
+      display:block;
+      animation: peacewave 1.8s infinite alternate ease-in-out;
+    }
+    @keyframes peacewave {
+      from { transform: rotate(-12deg);}
+      to { transform: rotate(12deg);}
+    }
+    h1{
+      color:#FF3CAC;
+      font-size:2.8rem;
+      font-weight:900;
+      margin-bottom:0.45rem;
+      letter-spacing:-0.06em;
+    }
+    .subtitle {
+      color:#40C9FF;
+      font-size:1.15rem;
+      font-weight:700;
+      margin-bottom:0.8em;
+    }
+    p{
+      color:#005C97;
+      font-size:1.09rem;
+      margin-bottom:2rem;
+      line-height:1.6;
+    }
+    a{
+      background:linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);
+      color:#fff;
+      border-radius:22px;
+      padding:0.85rem 2rem;
+      font-weight:800;
+      text-decoration:none;
+      font-size:1.09rem;
+      transition: box-shadow 0.14s, transform 0.11s;
+      display:inline-block;
+      box-shadow:0 2px 12px #40C9FF22;
+    }
+    a:hover{
+      box-shadow:0 8px 32px #FF3CAC33;
+      transform: translateY(-2px) scale(1.02);
+    }
+    .tip {
+      margin-top: 2.1rem;
+      color:#888;
+      font-size:0.98rem;
+      font-style:italic;
+    }
+    @media (max-width:500px){
+      .container{padding:1.2rem 0.5rem;}
+      .logo{width:40px;}
+      h1{font-size:2.1rem;}
+      .peace-emoji {font-size:2.1rem;}
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" class="logo" />
+    <span class="peace-emoji">✌️</span>
     <h1>404</h1>
-    <p>Oops! That page isn’t here.<br>Let’s bring the peace back.</p>
+    <div class="subtitle">Page Not Found</div>
+    <p>
+      Oops! That page isn’t here.<br>
+      But don’t worry — peace is just a click away.<br>
+      <span style="color:#FF3CAC;">Let’s get you back to good vibes.</span>
+    </p>
     <a href="homepage.html">Go to Homepage</a>
+    <div class="tip">If you think this is a mistake, let us know on our <a href="contact.html" style="color:#40C9FF;background:transparent;box-shadow:none;padding:0;font-weight:700;text-decoration:underline;">Contact page</a>.</div>
   </div>
 </body>
 </html>

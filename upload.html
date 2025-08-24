@@ -6,6 +6,7 @@
   <title>PeaceOut — Upload Video</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     body {
       background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);
       font-family: 'Inter', sans-serif;
@@ -13,12 +14,12 @@
       min-height: 100vh;
     }
     .container {
-      max-width: 400px;
+      max-width: 420px;
       margin: 4rem auto;
       background: #fff;
-      border-radius: 18px;
+      border-radius: 22px;
       box-shadow: 0 6px 24px #40C9FF33;
-      padding: 2.2em 2em;
+      padding: 2.5em 2em 2em 2em;
     }
     h1 {
       text-align: center;
@@ -32,11 +33,22 @@
       font-weight: 700;
       margin-top: 1em;
     }
-    input, textarea {
+    input[type="text"],
+    textarea {
       width: 100%;
       border: 1.3px solid #40C9FF;
       border-radius: 10px;
       padding: 0.7em;
+      font-size: 1em;
+      margin-bottom: 0.8em;
+      margin-top: 0.2em;
+    }
+    input[type="file"] {
+      width: 100%;
+      border: 1.3px solid #40C9FF;
+      border-radius: 10px;
+      padding: 0.5em 0.4em;
+      background: #f8f8f9;
       font-size: 1em;
       margin-bottom: 0.8em;
       margin-top: 0.2em;
@@ -52,27 +64,47 @@
       padding: 0.85em 0;
       cursor: pointer;
       margin-top: 1em;
+      transition: box-shadow 0.14s, transform 0.11s;
     }
     button:hover {
       box-shadow: 0 6px 24px #FF3CAC33;
+      transform: translateY(-2px) scale(1.02);
     }
     .msg {
       color:#FF3CAC;
       text-align:center;
       min-height:1.3em;
       margin-bottom:0.4em;
+      font-size: 1.03em;
+      font-weight: 600;
     }
     .success { color: #40C9FF; }
+    .info {
+      text-align:center;
+      font-size:0.97em;
+      margin-bottom:1em;
+      color:#888;
+    }
+    .preview-video {
+      display: block;
+      margin: 0.5em auto 1em auto;
+      max-width: 100%;
+      border-radius: 12px;
+      background: #B8FFF9;
+      box-shadow: 0 2px 10px #40C9FF11;
+    }
     @media (max-width: 600px) { .container {padding:1.1rem 0.5rem;} }
   </style>
 </head>
 <body>
   <form class="container" id="uploadForm" autocomplete="off" enctype="multipart/form-data">
     <h1>Upload Video</h1>
+    <div class="info">Share peaceful vibes with the community!<br>Accepted formats: MP4, WebM, MOV, etc.</div>
     <label for="videoTitle">Title</label>
-    <input type="text" id="videoTitle" name="title" maxlength="80" required />
+    <input type="text" id="videoTitle" name="title" maxlength="80" placeholder="Your video title" required />
     <label for="videoFile">Video File</label>
     <input type="file" id="videoFile" name="video" accept="video/*" required />
+    <video id="videoPreview" class="preview-video" controls style="display:none;"></video>
     <div class="msg" id="uploadMsg"></div>
     <button type="submit">Upload</button>
     <div style="text-align:center;margin-top:1em;">
@@ -81,6 +113,20 @@
   </form>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
+
+    // Video file preview
+    document.getElementById('videoFile').addEventListener('change', function() {
+      const file = this.files[0];
+      const preview = document.getElementById('videoPreview');
+      if (file && file.type.startsWith('video/')) {
+        const url = URL.createObjectURL(file);
+        preview.src = url;
+        preview.style.display = 'block';
+      } else {
+        preview.src = '';
+        preview.style.display = 'none';
+      }
+    });
 
     document.getElementById('uploadForm').onsubmit = async function(e) {
       e.preventDefault();
@@ -91,6 +137,14 @@
       const title = document.getElementById('videoTitle').value.trim();
       if (!file || !title) {
         msg.textContent = 'Please enter a title and select a file.';
+        return;
+      }
+      if (title.length > 80) {
+        msg.textContent = 'Title must be 80 characters or less.';
+        return;
+      }
+      if (!file.type.startsWith('video/')) {
+        msg.textContent = 'Please select a valid video file.';
         return;
       }
       const formData = new FormData();
@@ -107,7 +161,7 @@
         if (res.ok) {
           msg.textContent = 'Upload successful!';
           msg.classList.add('success');
-          setTimeout(() => window.location.href = 'homepage.html', 1000);
+          setTimeout(() => window.location.href = 'homepage.html', 1200);
         } else {
           msg.textContent = data.error || 'Upload failed.';
         }

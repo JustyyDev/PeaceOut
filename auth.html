@@ -109,8 +109,10 @@
 
     function setMsg(msg, isSuccess) {
       const msgDiv = document.getElementById('authMsg');
-      msgDiv.textContent = msg || '';
-      msgDiv.className = 'msg' + (isSuccess ? ' success' : '');
+      if (msgDiv) {
+        msgDiv.textContent = msg || '';
+        msgDiv.className = 'msg' + (isSuccess ? ' success' : '');
+      }
     }
 
     function showLoginForm() {
@@ -125,7 +127,7 @@
           <button type="submit">Login</button>
         </form>
         <div class="switch">
-          Don't have an account? <a onclick="showRegisterForm()">Register here</a>
+          Don't have an account? <a id="registerLink" tabindex="0">Register here</a>
         </div>
       `;
       document.getElementById('loginForm').onsubmit = async function(e) {
@@ -152,6 +154,7 @@
           setMsg('Network error. Please try again.');
         }
       };
+      document.getElementById('registerLink').onclick = showRegisterForm;
     }
 
     function showRegisterForm() {
@@ -168,7 +171,7 @@
           <button type="submit">Register</button>
         </form>
         <div class="switch">
-          Already have an account? <a onclick="showLoginForm()">Sign in</a>
+          Already have an account? <a id="loginLink" tabindex="0">Sign in</a>
         </div>
       `;
       document.getElementById('registerForm').onsubmit = async function(e) {
@@ -207,14 +210,13 @@
           setMsg('Network error. Please try again.');
         }
       };
+      document.getElementById('loginLink').onclick = showLoginForm;
     }
 
-    window.showLoginForm = showLoginForm;
-    window.showRegisterForm = showRegisterForm;
-
-    // On load
-    checkSession();
-    showLoginForm();
+    document.addEventListener('DOMContentLoaded', function() {
+      checkSession();
+      showLoginForm();
+    });
   </script>
 </body>
 </html>

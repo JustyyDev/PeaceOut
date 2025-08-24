@@ -79,6 +79,43 @@
       padding: 2.3em 2em 2em 2em;
       min-height: 300px;
     }
+    .hero-banner {
+      background: linear-gradient(90deg, #40C9FF11 0%, #FF3CAC11 100%);
+      border-radius: 14px;
+      padding: 2em 1.5em 2em 1.5em;
+      box-shadow: 0 1px 8px #40C9FF11;
+      margin-bottom: 2em;
+      text-align: center;
+    }
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #005C97;
+      margin-bottom: 0.4em;
+    }
+    .hero-sub {
+      color: #FF3CAC;
+      font-size: 1.15em;
+      font-weight: 700;
+      margin-bottom: 1em;
+    }
+    .go-live-btn {
+      background:linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);
+      color:#fff;
+      border:none;
+      border-radius:30px;
+      font-size:1.12em;
+      font-weight:800;
+      padding:0.7em 2.2em;
+      cursor:pointer;
+      margin-top:1.2em;
+      box-shadow:0 2px 12px #FF3CAC22;
+      transition:box-shadow 0.13s, transform 0.13s;
+    }
+    .go-live-btn:hover {
+      box-shadow:0 8px 32px #40C9FF22;
+      transform:translateY(-2px) scale(1.02);
+    }
     .search-bar {
       margin: 0 auto 2em auto;
       max-width: 500px;
@@ -109,6 +146,14 @@
       margin-top: 1em;
       margin-bottom: 2em;
       min-height: 2em;
+    }
+    .section-title {
+      font-size: 1.35em;
+      font-weight: 900;
+      color: #005C97;
+      margin-top: 2.5em;
+      margin-bottom: 0.7em;
+      text-align: left;
     }
     .videos-grid {
       display: grid;
@@ -232,20 +277,29 @@
     <a href="edit-profile.html">Profile</a>
   </nav>
   <div class="main-content" id="mainContent">
+    <div class="hero-banner">
+      <div class="hero-title">PeaceOut — The peaceful, energetic home for streaming and on-demand video</div>
+      <div class="hero-sub">Relax, create, stream, and vibe together.</div>
+      <button class="go-live-btn" onclick="window.location.href='upload.html'">Go Live / Upload Video</button>
+    </div>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search videos, users, etc.">
       <button id="searchBtn">Search</button>
     </div>
     <div class="search-results" id="searchResults"></div>
-    <h2>PeaceOut Community</h2>
+    <div class="section-title">PeaceOut Community</div>
     <p>Discover new videos, join live streams, and connect with creators!</p>
-    <h1 style="font-size:2.1rem;color:#005C97;font-weight:900;text-align:left;margin-bottom:0.2em;">Latest Uploads</h1>
+    <div class="section-title" style="font-size:2.1rem;margin-top:1.5em;">Latest Uploads</div>
     <div class="videos-grid" id="videosGrid">
       <!-- Videos will be loaded here -->
     </div>
   </div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
+
+    function showLoading() {
+      document.getElementById("videosGrid").innerHTML = "<div>Loading...</div>";
+    }
 
     async function checkSession() {
       try {
@@ -270,18 +324,16 @@
       }
     }
 
-    document.getElementById('logoutBtn').onclick = logout;
-
-    // Load videos from API
     async function loadVideos() {
+      showLoading();
       try {
         const res = await fetch(API_BASE + 'videos', { credentials: 'include' });
         const videos = await res.json();
         const videosHtml = videos.map(video => `
           <div class="video-card">
-            <img class="video-thumb" src="${video.thumb || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+            <img class="video-thumb" src="${video.filename ? 'https://peaceout-backend.onrender.com/uploads/' + video.filename : 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
             <div class="video-info">
-              <img class="uploader-avatar" src="${video.avatarUrl}" alt="${video.username}">
+              <img class="uploader-avatar" src="${video.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.username}">
               <div class="video-meta">
                 <div class="video-title">${video.title}</div>
                 <div class="video-uploader">@${video.username}</div>
@@ -289,18 +341,11 @@
             </div>
           </div>
         `).join("");
-        document.getElementById("videosGrid").innerHTML = videosHtml;
+        document.getElementById("videosGrid").innerHTML = videosHtml || "<div>No videos yet.</div>";
       } catch (e) {
         document.getElementById("videosGrid").innerHTML = "<div style='color:#FF3CAC;'>Failed to load videos.</div>";
       }
     }
-
-    document.getElementById('searchBtn').onclick = doSearch;
-    document.getElementById('searchInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        doSearch();
-      }
-    });
 
     async function doSearch() {
       const q = document.getElementById('searchInput').value.trim();
@@ -316,7 +361,7 @@
           html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Users</div>`;
           html += data.users.map(user => `
             <div class="user-card">
-              <img src="${user.avatarUrl}" alt="${user.username}">
+              <img src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${user.username}">
               <div class="user-info">
                 <div class="username">@${user.username}</div>
                 <div class="bio">${user.bio||''}</div>
@@ -328,7 +373,7 @@
           html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Videos</div>`;
           html += data.videos.map(video => `
             <div class="video-card" style="margin-bottom:1em;">
-              <img class="video-thumb" src="${video.thumb || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+              <img class="video-thumb" src="${video.filename ? 'https://peaceout-backend.onrender.com/uploads/' + video.filename : 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
               <div class="video-info">
                 <img class="uploader-avatar" src="${video.uploaderAvatar || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.uploaderUsername}">
                 <div class="video-meta">
@@ -348,7 +393,14 @@
       }
     }
 
-    checkSession();
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('logoutBtn').onclick = logout;
+      document.getElementById('searchBtn').onclick = doSearch;
+      document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doSearch();
+      });
+      checkSession();
+    });
   </script>
 </body>
 </html>

@@ -15,20 +15,59 @@
     input, textarea { width: 100%; border: 1.5px solid #40C9FF; border-radius: 12px; padding: 0.8rem; font-size: 1rem; margin-bottom: 0.7rem;}
     button { width: 100%; background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); color: #fff; border:none; border-radius: 22px; font-weight: 700; font-size: 1.1rem; padding: 0.8rem 0; cursor:pointer; margin-top: 1.4rem;}
     button:hover { box-shadow: 0 6px 24px #FF3CAC33; }
+    .msg {
+      text-align: center;
+      margin: 0.7em 0 0.4em 0;
+      font-size: 1.06em;
+      min-height: 1.2em;
+    }
+    .success { color: #40C9FF; }
+    .error { color: #FF3CAC; }
     .help { color:#005C97; margin-top:1.5rem; text-align:center;}
     @media (max-width: 600px) { .container {padding:1.1rem 0.5rem;} }
   </style>
 </head>
 <body>
-  <form class="container">
+  <form class="container" id="contactForm" autocomplete="off">
     <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" class="logo" />
     <h1>Contact Us</h1>
     <label for="email">Your Email</label>
-    <input type="email" id="email" required />
+    <input type="email" id="email" required autocomplete="email" />
     <label for="msg">Message</label>
     <textarea id="msg" rows="4" maxlength="300" required placeholder="How can we help?"></textarea>
+    <div id="contactMsg" class="msg"></div>
     <button type="submit">Send Message</button>
-    <div class="help">For urgent matters, email <a href="mailto:support@peaceout.com" style="color:#FF3CAC;">support@peaceout.com</a></div>
+    <div class="help">
+      For urgent matters, email
+      <a href="mailto:justytccdlol@gmail.com" style="color:#FF3CAC;">justytccdlol@gmail.com</a>
+    </div>
   </form>
+  <script>
+    // Simulated form submission (since no backend for contact)
+    document.getElementById('contactForm').onsubmit = function(e) {
+      e.preventDefault();
+      var email = document.getElementById('email').value.trim();
+      var msg = document.getElementById('msg').value.trim();
+      var msgDiv = document.getElementById('contactMsg');
+      msgDiv.textContent = '';
+      msgDiv.className = 'msg';
+      if (!email || !msg) {
+        msgDiv.textContent = "Please fill in all fields.";
+        msgDiv.className = 'msg error';
+        return;
+      }
+      // Basic email format validation
+      if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+        msgDiv.textContent = "Please enter a valid email address.";
+        msgDiv.className = 'msg error';
+        return;
+      }
+      // Simulate sending
+      msgDiv.textContent = "Thank you! Your message has been sent.";
+      msgDiv.className = 'msg success';
+      document.getElementById('contactForm').reset();
+      setTimeout(function() { msgDiv.textContent = ""; }, 5000);
+    }
+  </script>
 </body>
 </html>
