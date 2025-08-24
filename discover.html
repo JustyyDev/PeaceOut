@@ -62,7 +62,57 @@
     .video-info { flex:1; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
     .video-uploader { font-size:0.96em; color:#40C9FF; }
-    @media (max-width:600px) { .discover-container{padding:1em;} .results{grid-template-columns:1fr;} }
+    /* Video Modal styles */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 8px 32px #40C9FF44;
+      padding: 2em;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .modal-content video {
+      width: 480px;
+      max-width: 80vw;
+      max-height: 60vh;
+      border-radius: 16px;
+      background: #000;
+      margin-bottom: 1em;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      background: #FF3CAC;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1.3em;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width:600px) {
+      .discover-container{padding:1em;} .results{grid-template-columns:1fr;}
+      .modal-content video { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -92,6 +142,8 @@
       <!-- Results appear here -->
     </div>
   </div>
+  <!-- Modal for video playback -->
+  <div id="videoModal" style="display:none;"></div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
     let searchType = 'all';
@@ -108,12 +160,13 @@
 
     document.getElementById('searchInput').addEventListener('input', () => { doSearch(); });
 
+    // Use the file location as the video src directly, since PeaceOut stores S3 URLs
+    function videoSrcUrl(video) {
+      return video.filename || '';
+    }
     function videoThumbUrl(video) {
-      // Use uploaded file as thumbnail, or fallback
-      if (video.filename) {
-        return 'https://peaceout-backend.onrender.com/uploads/' + video.filename;
-      }
-      return 'https://placehold.co/640x360?text=No+Thumbnail';
+      // Optionally, you could generate a thumbnail, but use a placeholder for now
+      return 'https://placehold.co/640x360?text=Video';
     }
     function userAvatarUrl(user) {
       return user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg';
@@ -142,7 +195,7 @@
         if (searchType === 'all' || searchType === 'videos') {
           (data.videos || []).forEach(video => {
             html += `
-              <div class="video-card">
+              <div class="video-card" data-video='${JSON.stringify(video).replace(/'/g,"&apos;")}'>
                 <img class="video-thumb" src="${videoThumbUrl(video)}" alt="${video.title}">
                 <div class="video-info">
                   <div class="video-title">${video.title}</div>
@@ -153,10 +206,46 @@
           });
         }
         document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
+        attachVideoClickHandlers();
       } catch {
         document.getElementById('results').innerHTML = '<div style="color:#FF3CAC;">Search failed. Try again later.</div>';
       }
     }
+
+    // Attach click handler to each video card to open modal and play
+    function attachVideoClickHandlers() {
+      document.querySelectorAll('.video-card').forEach(card => {
+        card.onclick = function() {
+          const video = JSON.parse(card.getAttribute('data-video').replace(/&apos;/g, "'"));
+          openVideoModal(video);
+        };
+      });
+    }
+
+    // Modal logic
+    function openVideoModal(video) {
+      const modal = document.getElementById('videoModal');
+      modal.innerHTML = `
+        <div class="modal-bg" onclick="if(event.target===this)closeVideoModal()">
+          <div class="modal-content">
+            <button class="modal-close" onclick="closeVideoModal()">&times;</button>
+            <video controls autoplay src="${videoSrcUrl(video)}"></video>
+            <div class="video-title">${video.title}</div>
+            <div class="video-uploader">@${video.uploaderUsername}</div>
+          </div>
+        </div>
+      `;
+      modal.style.display = 'block';
+    }
+    function closeVideoModal() {
+      document.getElementById('videoModal').style.display = 'none';
+      document.getElementById('videoModal').innerHTML = '';
+    }
+    // Expose closeVideoModal globally
+    window.closeVideoModal = closeVideoModal;
+
+    // Optional: auto search on page load (or remove if not desired)
+    doSearch();
   </script>
 </body>
 </html>
