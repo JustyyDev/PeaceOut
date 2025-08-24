@@ -9,45 +9,28 @@
     body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
     .topbar, .site-nav { background: #fff; }
     .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5em 2em 1.2em 2em;
-      border-radius: 0 0 18px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px;
       box-shadow: 0 2px 12px #40C9FF22;
     }
-    .logo {
-      width: 48px;
-      margin-right: 1.1em;
-    }
-    .welcome {
-      font-size: 1.4em;
-      color: #005C97;
-      font-weight: 800;
-    }
+    .logo { width: 48px; margin-right: 1.1em; }
+    .welcome { font-size: 1.4em; color: #005C97; font-weight: 800; }
     .site-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      background: #fff;
-      padding: 0.7rem 2rem 0.3rem 2rem;
-      box-shadow: 0 2px 12px #40C9FF11;
-      margin-bottom: 1.2rem;
-      border-radius: 0 0 16px 16px;
+      display: flex; align-items: center; gap: 1.2rem; background: #fff;
+      padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11;
+      margin-bottom: 1.2rem; border-radius: 0 0 16px 16px;
     }
     .site-nav a {
-      color: #005C97;
-      font-weight: 700;
-      text-decoration: none;
-      padding: 0.4rem 1.2rem;
-      border-radius: 20px;
-      transition: background 0.14s;
+      color: #005C97; font-weight: 700; text-decoration: none;
+      padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s;
     }
     .site-nav a.active, .site-nav a:hover {
-      background: #B8FFF9;
-      color: #FF3CAC;
+      background: #B8FFF9; color: #FF3CAC;
     }
-    .discover-container { max-width: 900px; margin: 3em auto; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em; }
+    .discover-container {
+      max-width: 900px; margin: 3em auto; background: #fff;
+      border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em;
+    }
     .search-bar { display: flex; gap:1em; align-items: center; margin-bottom: 2em; }
     .search-bar input { flex:1; padding:0.75em; font-size:1.1em; border-radius:12px; border:1.5px solid #40C9FF; }
     .tabs { margin-bottom:1.2em; }
@@ -62,56 +45,63 @@
     .video-info { flex:1; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
     .video-uploader { font-size:0.96em; color:#40C9FF; }
-    /* Video Modal styles */
+    /* Custom Video Modal UI */
     .modal-bg {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); display: flex;
+      align-items: center; justify-content: center; z-index: 1000;
     }
     .modal-content {
-      background: #fff;
-      border-radius: 22px;
+      background: #fff; border-radius: 22px;
       box-shadow: 0 8px 32px #40C9FF44;
-      padding: 2em;
-      max-width: 90vw;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
+      padding: 2em 2em 1.5em 2em; max-width: 700px; min-width:300px; width: 90vw; max-height: 90vh;
+      display: flex; flex-direction: column; align-items: center; position: relative;
     }
-    .modal-content video {
-      width: 480px;
-      max-width: 80vw;
-      max-height: 60vh;
-      border-radius: 16px;
-      background: #000;
-      margin-bottom: 1em;
+    .custom-video-wrapper {
+      width: 100%; background: #222; border-radius: 20px; margin-bottom: 1.3em;
+      position: relative; overflow: hidden; min-height: 320px; display:flex; align-items: center; justify-content:center;
+    }
+    .custom-video {
+      width: 100%; max-width: 600px; max-height: 340px; outline: none; border-radius: 20px;
+      background: #222;
+    }
+    .custom-controls {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; gap: 1em; margin-top: 0.7em;
+    }
+    .custom-controls button, .custom-controls input[type="range"] {
+      accent-color: #40C9FF;
+    }
+    .custom-controls button {
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      border: none; border-radius: 50%; width: 40px; height: 40px; color: #fff;
+      font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.11s;
+    }
+    .custom-controls button:hover { background: #FF3CAC; transform: scale(1.08);}
+    .custom-controls input[type="range"] {
+      width: 100px;
+    }
+    .custom-time {
+      font-size: 0.98em; color: #005C97; min-width: 75px; text-align:center;
     }
     .modal-close {
-      position: absolute;
-      top: 1em;
-      right: 1em;
-      background: #FF3CAC;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      font-size: 1.3em;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; top: 1em; right: 1em;
+      background: #FF3CAC; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px;
+      font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .video-title { font-weight: 700; color: #005C97; font-size: 1.13em; margin-bottom: 0.1em; text-align:center;}
+    .video-uploader { font-size: 1.05em; color: #40C9FF; text-align:center;}
+    .video-error-ui {
+      width: 100%; height: 320px; background: #444; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #eee;
+    }
+    .video-error-ui .icon {
+      font-size: 3.2em; margin-bottom: 0.3em;
     }
     @media (max-width:600px) {
       .discover-container{padding:1em;} .results{grid-template-columns:1fr;}
-      .modal-content video { width: 100%; }
+      .custom-video-wrapper, .video-error-ui { min-height: 180px; }
+      .modal-content { padding:1em;}
     }
   </style>
 </head>
@@ -148,7 +138,6 @@
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
     let searchType = 'all';
 
-    // Tab switching logic
     document.querySelectorAll('.tabs button').forEach(btn => {
       btn.onclick = () => {
         document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
@@ -157,15 +146,12 @@
         doSearch();
       };
     });
-
     document.getElementById('searchInput').addEventListener('input', () => { doSearch(); });
 
-    // Use the file location as the video src directly, since PeaceOut stores S3 URLs
     function videoSrcUrl(video) {
       return video.filename || '';
     }
     function videoThumbUrl(video) {
-      // Optionally, you could generate a thumbnail, but use a placeholder for now
       return 'https://placehold.co/640x360?text=Video';
     }
     function userAvatarUrl(user) {
@@ -212,7 +198,6 @@
       }
     }
 
-    // Attach click handler to each video card to open modal and play
     function attachVideoClickHandlers() {
       document.querySelectorAll('.video-card').forEach(card => {
         card.onclick = function() {
@@ -222,30 +207,109 @@
       });
     }
 
-    // Modal logic
+    // Format seconds as mm:ss
+    function formatTime(t) {
+      if (isNaN(t)) return "00:00";
+      const m = Math.floor(t/60), s = Math.floor(t%60);
+      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    // Modal logic: Custom Video UI
     function openVideoModal(video) {
       const modal = document.getElementById('videoModal');
       modal.innerHTML = `
         <div class="modal-bg" onclick="if(event.target===this)closeVideoModal()">
           <div class="modal-content">
             <button class="modal-close" onclick="closeVideoModal()">&times;</button>
-            <video controls autoplay src="${videoSrcUrl(video)}"></video>
+            <div class="custom-video-wrapper" id="customVideoWrap">
+              <video id="customVideo" class="custom-video" src="${videoSrcUrl(video)}" tabindex="0"></video>
+              <div id="videoErrorUI" class="video-error-ui" style="display:none;">
+                <div class="icon">📄</div>
+                <div>No video with supported format and MIME type found.</div>
+              </div>
+            </div>
+            <div class="custom-controls" id="customControls" style="display:none;">
+              <button id="playPauseBtn" title="Play/Pause">▶️</button>
+              <input id="seekBar" type="range" min="0" value="0" step="0.01">
+              <span class="custom-time" id="currentTime">00:00</span>/<span class="custom-time" id="duration">00:00</span>
+              <button id="muteBtn" title="Mute/Unmute">🔊</button>
+            </div>
             <div class="video-title">${video.title}</div>
             <div class="video-uploader">@${video.uploaderUsername}</div>
           </div>
         </div>
       `;
       modal.style.display = 'block';
+      setupCustomVideoUI();
+    }
+
+    function setupCustomVideoUI() {
+      const video = document.getElementById('customVideo');
+      const controls = document.getElementById('customControls');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const seekBar = document.getElementById('seekBar');
+      const currentTimeSpan = document.getElementById('currentTime');
+      const durationSpan = document.getElementById('duration');
+      const muteBtn = document.getElementById('muteBtn');
+      const errorUI = document.getElementById('videoErrorUI');
+
+      let wasPlayingBeforeSeek = false;
+
+      // Catch unsupported video error
+      video.onerror = function() {
+        controls.style.display = 'none';
+        errorUI.style.display = 'flex';
+      };
+      video.onloadedmetadata = function() {
+        controls.style.display = '';
+        errorUI.style.display = 'none';
+        seekBar.max = video.duration || 1;
+        durationSpan.textContent = formatTime(video.duration);
+      };
+      video.onplay = () => {
+        playPauseBtn.textContent = "⏸️";
+      };
+      video.onpause = () => {
+        playPauseBtn.textContent = "▶️";
+      };
+      video.ontimeupdate = () => {
+        seekBar.value = video.currentTime;
+        currentTimeSpan.textContent = formatTime(video.currentTime);
+      };
+      seekBar.oninput = () => {
+        video.currentTime = seekBar.value;
+        currentTimeSpan.textContent = formatTime(video.currentTime);
+      };
+      playPauseBtn.onclick = () => {
+        if (video.paused) video.play();
+        else video.pause();
+      };
+      muteBtn.onclick = () => {
+        video.muted = !video.muted;
+        muteBtn.textContent = video.muted ? "🔇" : "🔊";
+      };
+      // Keyboard accessibility
+      video.onkeydown = e => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          playPauseBtn.click();
+        }
+      };
+      // On initial error, show error UI
+      setTimeout(() => {
+        if (video.readyState === 0) {
+          controls.style.display = 'none';
+          errorUI.style.display = 'flex';
+        }
+      }, 500);
+      // Auto play if possible
+      setTimeout(() => { if (video.paused) video.play().catch(()=>{}); }, 200);
     }
     function closeVideoModal() {
       document.getElementById('videoModal').style.display = 'none';
       document.getElementById('videoModal').innerHTML = '';
     }
-    // Expose closeVideoModal globally
     window.closeVideoModal = closeVideoModal;
-
-    // Optional: auto search on page load (or remove if not desired)
-    doSearch();
   </script>
 </body>
 </html>
