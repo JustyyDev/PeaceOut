@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Edit Profile — PeaceOut</title>
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body { background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh;}
+    .container { max-width: 420px; margin: 4rem auto; background:#fff; border-radius: 24px; box-shadow: 0 6px 24px #40C9FF33; padding: 2.5rem 2rem;}
+    .logo { width: 60px; display: block; margin: 0 auto 1.2rem; }
+    h1 { text-align: center; color: #005C97; font-size: 2.1rem; margin-bottom: 1rem;}
+    label { display: block; font-weight: 700; color: #40C9FF; margin:1.1rem 0 0.3rem;}
+    input, textarea { width: 100%; border: 1.5px solid #40C9FF; border-radius: 12px; padding: 0.8rem; font-size: 1rem; margin-bottom: 0.7rem;}
+    .avatar-preview { display: block; width: 84px; height: 84px; object-fit: cover; border-radius: 50%; border: 3px solid #FF3CAC; margin: 0.5rem auto 1.1rem;}
+    button { width: 100%; background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); color: #fff; border:none; border-radius: 22px; font-weight: 700; font-size: 1.1rem; padding: 0.8rem 0; cursor:pointer; margin-top: 1.4rem;}
+    button:hover { box-shadow: 0 6px 24px #FF3CAC33; }
+    @media (max-width: 600px) { .container {padding:1.1rem 0.5rem;} }
+  </style>
+</head>
+<body>
+  <form class="container">
+    <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" class="logo" />
+    <h1>Edit Profile</h1>
+    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed=You" alt="Avatar preview" class="avatar-preview" id="avatarPreview" />
+    <label for="avatarUrl">Avatar URL</label>
+    <input type="url" id="avatarUrl" name="avatarUrl" value="https://api.dicebear.com/7.x/thumbs/svg?seed=You" onchange="document.getElementById('avatarPreview').src=this.value" />
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" value="You" required />
+    <label for="bio">Bio</label>
+    <textarea id="bio" name="bio" rows="3" maxlength="140" placeholder="Tell us about yourself!"></textarea>
+    <button type="submit">Save Changes</button>
+  </form>
+</body>
+</html>

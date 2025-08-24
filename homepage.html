@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut — Home</title>
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
+      min-height: 100vh;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 0.75rem 2rem;
+      box-shadow: 0 2px 12px #40C9FF22;
+    }
+    .navbar .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: #40C9FF;
+      letter-spacing: 0.03em;
+    }
+    .navbar img {
+      width: 40px;
+      height: 40px;
+    }
+    .navbar .user-area {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .navbar .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #40C9FF;
+      object-fit: cover;
+    }
+    .navbar button, .navbar a {
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1.2rem;
+      border-radius: 22px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.07s;
+      box-shadow: 0 2px 8px #40C9FF33;
+    }
+    .navbar button:hover, .navbar a:hover {
+      box-shadow: 0 6px 24px #FF3CAC33;
+      transform: translateY(-2px) scale(1.02);
+    }
+    .main-content {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1rem;
+    }
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .video-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px #40C9FF22;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.13s, box-shadow 0.15s;
+    }
+    .video-card:hover {
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 10px 32px #FF3CAC33;
+    }
+    .video-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #B8FFF9;
+    }
+    .video-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+    .uploader-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #FF3CAC;
+      object-fit: cover;
+    }
+    .video-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+      min-width: 0;
+    }
+    .video-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #005C97;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .video-uploader {
+      font-size: 0.98rem;
+      color: #40C9FF;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .login-register {
+      max-width: 400px;
+      background: #fff;
+      margin: 4rem auto 0;
+      padding: 2.5rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 6px 24px #40C9FF33;
+      text-align: center;
+    }
+    .login-register h2 {
+      color: #005C97;
+      font-weight: 900;
+      font-size: 1.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .login-register input {
+      width: 90%;
+      display: block;
+      margin: 0.6rem auto 1.2rem;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1.5px solid #40C9FF;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .login-register button {
+      width: 60%;
+      margin: 0.5rem auto 0;
+    }
+    @media (max-width: 700px) {
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+      .main-content {
+        margin-top: 1rem;
+      }
+    }
+    /* Navigation bar for logged-in users only */
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      background: #fff;
+      padding: 0.7rem 2rem 0.3rem 2rem;
+      box-shadow: 0 2px 12px #40C9FF11;
+      margin-bottom: 1.2rem;
+      border-radius: 0 0 16px 16px;
+    }
+    .site-nav a {
+      color: #005C97;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      transition: background 0.14s;
+    }
+    .site-nav a:hover {
+      background: #B8FFF9;
+      color: #FF3CAC;
+    }
+    .site-nav img {
+      width: 30px;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">
+      <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" />
+      PeaceOut
+    </div>
+    <div class="user-area" id="userArea">
+      <!-- Populated by JS -->
+    </div>
+  </nav>
+  <div id="siteNavContainer"></div>
+  <main class="main-content" id="mainContent">
+    <!-- Populated by JS -->
+  </main>
+  <script>
+    // Mock database: In a real application, replace with API requests!
+    const demoUsers = [
+      { id: "1", username: "peace_creator", avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg" },
+      { id: "2", username: "energeticgal", avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg" },
+    ];
+    const demoVideos = [
+      {
+        id: "vid-1",
+        title: "Chill Beats to Relax/Stream To",
+        uploader: demoUsers[0],
+        thumb: "https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg"
+      },
+      {
+        id: "vid-2",
+        title: "Peaceful Nature Livestream",
+        uploader: demoUsers[1],
+        thumb: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "vid-3",
+        title: "Late Night Coding & Vibes",
+        uploader: demoUsers[0],
+        thumb: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+      }
+    ];
+
+    // --- Login Logic (Mock) ---
+    function getLoggedInUser() {
+      // For demo, use sessionStorage
+      return JSON.parse(sessionStorage.getItem("peaceoutUser")) || null;
+    }
+    function setLoggedInUser(user) {
+      sessionStorage.setItem("peaceoutUser", JSON.stringify(user));
+      renderPage();
+    }
+    function logoutUser() {
+      sessionStorage.removeItem("peaceoutUser");
+      renderPage();
+    }
+
+    // --- Render Login/Register UI ---
+    function renderLogin() {
+      document.getElementById("userArea").innerHTML = `
+        <button onclick="showLoginForm()">Login / Register</button>
+      `;
+      document.getElementById("siteNavContainer").innerHTML = "";
+      document.getElementById("mainContent").innerHTML = `
+        <div class="login-register" id="loginBox">
+          <h2>Sign In to PeaceOut</h2>
+          <input type="text" placeholder="Username" id="loginUsername" autocomplete="username">
+          <input type="password" placeholder="Password" id="loginPassword" autocomplete="current-password">
+          <button onclick="handleLogin()">Login</button>
+          <p style="margin-top:1.6rem; color:#40C9FF;">No account? <a href="#" style="color:#FF3CAC;text-decoration:underline;" onclick="showRegisterForm();return false;">Register here</a></p>
+        </div>
+      `;
+    }
+
+    function renderRegister() {
+      document.getElementById("siteNavContainer").innerHTML = "";
+      document.getElementById("mainContent").innerHTML = `
+        <div class="login-register" id="registerBox">
+          <h2>Create your PeaceOut Account</h2>
+          <input type="text" placeholder="Username" id="registerUsername" autocomplete="username">
+          <input type="password" placeholder="Password" id="registerPassword" autocomplete="new-password">
+          <button onclick="handleRegister()">Register</button>
+          <p style="margin-top:1.6rem; color:#40C9FF;">Already have an account? <a href="#" style="color:#FF3CAC;text-decoration:underline;" onclick="showLoginForm();return false;">Login instead</a></p>
+        </div>
+      `;
+    }
+
+    // --- Render Main Homepage ---
+    function renderHomepage(user) {
+      // Nav bar user area
+      document.getElementById("userArea").innerHTML = `
+        <img class="avatar" src="${user.avatarUrl}" alt="${user.username} avatar">
+        <span style="color:#005C97;font-weight:600">${user.username}</span>
+        <button onclick="logoutUser()">Log out</button>
+      `;
+      // Navigation bar (subpages) - only for logged in users
+      document.getElementById("siteNavContainer").innerHTML = `
+        <nav class="site-nav">
+          <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
+          <a href="upload.html">Upload</a>
+          <a href="about-us.html">About</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="edit-profile.html">Profile</a>
+        </nav>
+      `;
+      // Actual videos grid!
+      let videosHtml = demoVideos.map(video => `
+        <div class="video-card">
+          <img class="video-thumb" src="${video.thumb}" alt="${video.title}">
+          <div class="video-info">
+            <img class="uploader-avatar" src="${video.uploader.avatarUrl}" alt="${video.uploader.username}">
+            <div class="video-meta">
+              <div class="video-title">${video.title}</div>
+              <div class="video-uploader">@${video.uploader.username}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("mainContent").innerHTML = `
+        <h1 style="font-size:2.1rem;color:#005C97;font-weight:900;text-align:left;margin-bottom:0.2em;">Latest Uploads</h1>
+        <div class="videos-grid">${videosHtml}</div>
+      `;
+    }
+
+    // --- Login/Register Handlers (Mock only) ---
+    function handleLogin() {
+      const username = document.getElementById("loginUsername").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const user = demoUsers.find(u => u.username === username);
+      if (user && password) {
+        setLoggedInUser(user);
+      } else {
+        alert("Invalid username or password (use: peace_creator or energeticgal)");
+      }
+    }
+    function handleRegister() {
+      const username = document.getElementById("registerUsername").value.trim();
+      const password = document.getElementById("registerPassword").value;
+      if (!username || !password) {
+        alert("Please enter a username & password.");
+        return;
+      }
+      // For demo, pick a random avatar
+      const newUser = {
+        id: Date.now().toString(),
+        username,
+        avatarUrl: `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(username)}`
+      };
+      setLoggedInUser(newUser);
+    }
+    function showLoginForm() {
+      renderLogin();
+    }
+    function showRegisterForm() {
+      renderRegister();
+    }
+
+    // --- Initial Render ---
+    function renderPage() {
+      const user = getLoggedInUser();
+      if (!user) {
+        renderLogin();
+      } else {
+        renderHomepage(user);
+      }
+    }
+    window.showLoginForm = showLoginForm;
+    window.showRegisterForm = showRegisterForm;
+    window.handleLogin = handleLogin;
+    window.handleRegister = handleRegister;
+    window.logoutUser = logoutUser;
+    renderPage();
+  </script>
+</body>
+</html>
