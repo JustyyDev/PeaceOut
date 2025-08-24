@@ -8,29 +8,13 @@
   <style>
     body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
     .topbar, .site-nav { background: #fff; }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px;
-      box-shadow: 0 2px 12px #40C9FF22;
-    }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px; box-shadow: 0 2px 12px #40C9FF22; }
     .logo { width: 48px; margin-right: 1.1em; }
     .welcome { font-size: 1.4em; color: #005C97; font-weight: 800; }
-    .site-nav {
-      display: flex; align-items: center; gap: 1.2rem; background: #fff;
-      padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11;
-      margin-bottom: 1.2rem; border-radius: 0 0 16px 16px;
-    }
-    .site-nav a {
-      color: #005C97; font-weight: 700; text-decoration: none;
-      padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s;
-    }
-    .site-nav a.active, .site-nav a:hover {
-      background: #B8FFF9; color: #FF3CAC;
-    }
-    .discover-container {
-      max-width: 900px; margin: 3em auto; background: #fff;
-      border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em;
-    }
+    .site-nav { display: flex; align-items: center; gap: 1.2rem; background: #fff; padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11; margin-bottom: 1.2rem; border-radius: 0 0 16px 16px; }
+    .site-nav a { color: #005C97; font-weight: 700; text-decoration: none; padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s; }
+    .site-nav a.active, .site-nav a:hover { background: #B8FFF9; color: #FF3CAC; }
+    .discover-container { max-width: 900px; margin: 3em auto; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em; }
     .search-bar { display: flex; gap:1em; align-items: center; margin-bottom: 2em; }
     .search-bar input { flex:1; padding:0.75em; font-size:1.1em; border-radius:12px; border:1.5px solid #40C9FF; }
     .tabs { margin-bottom:1.2em; }
@@ -45,64 +29,28 @@
     .video-info { flex:1; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
     .video-uploader { font-size:0.96em; color:#40C9FF; }
-    /* Custom Video Modal UI */
-    .modal-bg {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7); display: flex;
-      align-items: center; justify-content: center; z-index: 1000;
-    }
-    .modal-content {
-      background: #fff; border-radius: 22px;
-      box-shadow: 0 8px 32px #40C9FF44;
-      padding: 2em 2em 1.5em 2em; max-width: 700px; min-width:300px; width: 90vw; max-height: 90vh;
-      display: flex; flex-direction: column; align-items: center; position: relative;
-    }
-    .custom-video-wrapper {
-      width: 100%; background: #222; border-radius: 20px; margin-bottom: 1.3em;
-      position: relative; overflow: hidden; min-height: 320px; display:flex; align-items: center; justify-content:center;
-    }
-    .custom-video {
-      width: 100%; max-width: 600px; max-height: 340px; outline: none; border-radius: 20px;
-      background: #222;
-    }
-    .custom-controls {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; gap: 1em; margin-top: 0.7em;
-    }
-    .custom-controls button, .custom-controls input[type="range"] {
-      accent-color: #40C9FF;
-    }
-    .custom-controls button {
-      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
-      border: none; border-radius: 50%; width: 40px; height: 40px; color: #fff;
-      font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, transform 0.11s;
-    }
+    /* Modal UI */
+    .modal-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-content { background: #fff; border-radius: 22px; box-shadow: 0 8px 32px #40C9FF44; padding: 2em 2em 1.5em 2em; max-width: 700px; min-width:300px; width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .custom-video-wrapper { width: 100%; background: #222; border-radius: 20px; margin-bottom: 1.3em; position: relative; overflow: hidden; min-height: 320px; display:flex; align-items: center; justify-content:center; }
+    .custom-video { width: 100%; max-width: 600px; max-height: 340px; outline: none; border-radius: 20px; background: #222; }
+    .custom-controls { display: flex; align-items: center; justify-content: center; width: 100%; gap: 1em; margin-top: 0.7em; }
+    .custom-controls button, .custom-controls input[type="range"] { accent-color: #40C9FF; }
+    .custom-controls button { background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); border: none; border-radius: 50%; width: 40px; height: 40px; color: #fff; font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.11s; }
     .custom-controls button:hover { background: #FF3CAC; transform: scale(1.08);}
-    .custom-controls input[type="range"] {
-      width: 100px;
-    }
-    .custom-time {
-      font-size: 0.98em; color: #005C97; min-width: 75px; text-align:center;
-    }
-    .modal-close {
-      position: absolute; top: 1em; right: 1em;
-      background: #FF3CAC; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px;
-      font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
+    .custom-controls input[type="range"] { width: 100px; }
+    .custom-time { font-size: 0.98em; color: #005C97; min-width: 75px; text-align:center; }
+    .modal-close { position: absolute; top: 1em; right: 1em; background: #FF3CAC; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .video-title { font-weight: 700; color: #005C97; font-size: 1.13em; margin-bottom: 0.1em; text-align:center;}
     .video-uploader { font-size: 1.05em; color: #40C9FF; text-align:center;}
-    .video-error-ui {
-      width: 100%; height: 320px; background: #444; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #eee;
-    }
-    .video-error-ui .icon {
-      font-size: 3.2em; margin-bottom: 0.3em;
-    }
-    @media (max-width:600px) {
-      .discover-container{padding:1em;} .results{grid-template-columns:1fr;}
-      .custom-video-wrapper, .video-error-ui { min-height: 180px; }
-      .modal-content { padding:1em;}
-    }
+    .video-stats { display: flex; gap: 1.5em; justify-content:center; margin: .7em 0 1em 0; }
+    .video-stats .stat { color: #333; font-weight: 600; display:inline-flex; align-items:center; gap: 0.3em;}
+    .video-stats .like-btn, .video-stats .dislike-btn { background: none; border: none; color: #40C9FF; font-size: 1.1em; cursor: pointer; }
+    .video-stats .like-btn.liked { color: #FF3CAC; }
+    .video-stats .dislike-btn.disliked { color: #B8FFF9; }
+    .video-error-ui { width: 100%; height: 320px; background: #444; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #eee; }
+    .video-error-ui .icon { font-size: 3.2em; margin-bottom: 0.3em; }
+    @media (max-width:600px) { .discover-container{padding:1em;} .results{grid-template-columns:1fr;} .custom-video-wrapper, .video-error-ui { min-height: 180px; } .modal-content { padding:1em;} }
   </style>
 </head>
 <body>
@@ -128,9 +76,7 @@
       <button data-type="videos">Videos</button>
       <button data-type="users">Users</button>
     </div>
-    <div class="results" id="results">
-      <!-- Results appear here -->
-    </div>
+    <div class="results" id="results"></div>
   </div>
   <!-- Modal for video playback -->
   <div id="videoModal" style="display:none;"></div>
@@ -148,9 +94,6 @@
     });
     document.getElementById('searchInput').addEventListener('input', () => { doSearch(); });
 
-    function videoSrcUrl(video) {
-      return video.filename || '';
-    }
     function videoThumbUrl(video) {
       return 'https://placehold.co/640x360?text=Video';
     }
@@ -186,6 +129,11 @@
                 <div class="video-info">
                   <div class="video-title">${video.title}</div>
                   <div class="video-uploader">@${video.uploaderUsername}</div>
+                  <div class="video-stats">
+                    <span class="stat">👍 ${video.likes||0}</span>
+                    <span class="stat">👎 ${video.dislikes||0}</span>
+                    <span class="stat">👁️ ${video.views||0}</span>
+                  </div>
                 </div>
               </div>
             `;
@@ -207,14 +155,12 @@
       });
     }
 
-    // Format seconds as mm:ss
     function formatTime(t) {
       if (isNaN(t)) return "00:00";
       const m = Math.floor(t/60), s = Math.floor(t%60);
       return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
 
-    // Modal logic: Custom Video UI
     function openVideoModal(video) {
       const modal = document.getElementById('videoModal');
       modal.innerHTML = `
@@ -222,7 +168,7 @@
           <div class="modal-content">
             <button class="modal-close" onclick="closeVideoModal()">&times;</button>
             <div class="custom-video-wrapper" id="customVideoWrap">
-              <video id="customVideo" class="custom-video" src="${videoSrcUrl(video)}" tabindex="0"></video>
+              <video id="customVideo" class="custom-video" src="${video.filename}" tabindex="0" controls></video>
               <div id="videoErrorUI" class="video-error-ui" style="display:none;">
                 <div class="icon">📄</div>
                 <div>No video with supported format and MIME type found.</div>
@@ -236,15 +182,22 @@
             </div>
             <div class="video-title">${video.title}</div>
             <div class="video-uploader">@${video.uploaderUsername}</div>
+            <div class="video-stats" id="modalStats">
+              <button class="like-btn" id="likeBtn">👍</button>
+              <span class="stat" id="likeCount">${video.likes||0}</span>
+              <button class="dislike-btn" id="dislikeBtn">👎</button>
+              <span class="stat" id="dislikeCount">${video.dislikes||0}</span>
+              <span class="stat"><span id="viewCount">${video.views||0}</span> 👁️</span>
+            </div>
           </div>
         </div>
       `;
       modal.style.display = 'block';
-      setupCustomVideoUI();
+      setupCustomVideoUI(video);
     }
 
-    function setupCustomVideoUI() {
-      const video = document.getElementById('customVideo');
+    function setupCustomVideoUI(video) {
+      const v = document.getElementById('customVideo');
       const controls = document.getElementById('customControls');
       const playPauseBtn = document.getElementById('playPauseBtn');
       const seekBar = document.getElementById('seekBar');
@@ -252,58 +205,77 @@
       const durationSpan = document.getElementById('duration');
       const muteBtn = document.getElementById('muteBtn');
       const errorUI = document.getElementById('videoErrorUI');
+      let hasCountedView = false;
 
-      let wasPlayingBeforeSeek = false;
-
-      // Catch unsupported video error
-      video.onerror = function() {
+      v.onerror = function() {
         controls.style.display = 'none';
         errorUI.style.display = 'flex';
       };
-      video.onloadedmetadata = function() {
+      v.onloadedmetadata = function() {
         controls.style.display = '';
         errorUI.style.display = 'none';
-        seekBar.max = video.duration || 1;
-        durationSpan.textContent = formatTime(video.duration);
+        seekBar.max = v.duration || 1;
+        durationSpan.textContent = formatTime(v.duration);
       };
-      video.onplay = () => {
-        playPauseBtn.textContent = "⏸️";
-      };
-      video.onpause = () => {
-        playPauseBtn.textContent = "▶️";
-      };
-      video.ontimeupdate = () => {
-        seekBar.value = video.currentTime;
-        currentTimeSpan.textContent = formatTime(video.currentTime);
+      v.onplay = () => { playPauseBtn.textContent = "⏸️"; };
+      v.onpause = () => { playPauseBtn.textContent = "▶️"; };
+      v.ontimeupdate = () => {
+        seekBar.value = v.currentTime;
+        currentTimeSpan.textContent = formatTime(v.currentTime);
+        // increment view after 3 seconds of watch time, only once per open
+        if (!hasCountedView && v.currentTime >= 3) {
+          hasCountedView = true;
+          fetch(`${API_BASE}videos/${video.id}/view`, { method: 'POST', credentials: 'include' })
+            .then(()=>{ document.getElementById('viewCount').textContent = (parseInt(document.getElementById('viewCount').textContent)+1); });
+        }
       };
       seekBar.oninput = () => {
-        video.currentTime = seekBar.value;
-        currentTimeSpan.textContent = formatTime(video.currentTime);
+        v.currentTime = seekBar.value;
+        currentTimeSpan.textContent = formatTime(v.currentTime);
       };
-      playPauseBtn.onclick = () => {
-        if (video.paused) video.play();
-        else video.pause();
-      };
+      playPauseBtn.onclick = () => { if (v.paused) v.play(); else v.pause(); };
       muteBtn.onclick = () => {
-        video.muted = !video.muted;
-        muteBtn.textContent = video.muted ? "🔇" : "🔊";
+        v.muted = !v.muted;
+        muteBtn.textContent = v.muted ? "🔇" : "🔊";
       };
-      // Keyboard accessibility
-      video.onkeydown = e => {
-        if (e.code === "Space") {
-          e.preventDefault();
-          playPauseBtn.click();
+      v.onkeydown = e => { if (e.code === "Space") { e.preventDefault(); playPauseBtn.click(); } };
+      setTimeout(() => { if (v.readyState === 0) { controls.style.display = 'none'; errorUI.style.display = 'flex'; } }, 500);
+      setTimeout(() => { if (v.paused) v.play().catch(()=>{}); }, 200);
+
+      // Like/Dislike logic
+      const likeBtn = document.getElementById('likeBtn');
+      const dislikeBtn = document.getElementById('dislikeBtn');
+      const likeCount = document.getElementById('likeCount');
+      const dislikeCount = document.getElementById('dislikeCount');
+      let liked = false, disliked = false;
+      likeBtn.onclick = () => {
+        if (!liked) {
+          fetch(`${API_BASE}videos/${video.id}/like`, { method: 'POST', credentials: 'include' }).then(()=> {
+            likeCount.textContent = parseInt(likeCount.textContent)+1;
+            likeBtn.classList.add('liked');
+            liked = true;
+            // Remove dislike if already disliked
+            if (disliked) {
+              dislikeBtn.classList.remove('disliked');
+              disliked = false;
+            }
+          });
         }
       };
-      // On initial error, show error UI
-      setTimeout(() => {
-        if (video.readyState === 0) {
-          controls.style.display = 'none';
-          errorUI.style.display = 'flex';
+      dislikeBtn.onclick = () => {
+        if (!disliked) {
+          fetch(`${API_BASE}videos/${video.id}/dislike`, { method: 'POST', credentials: 'include' }).then(()=> {
+            dislikeCount.textContent = parseInt(dislikeCount.textContent)+1;
+            dislikeBtn.classList.add('disliked');
+            disliked = true;
+            // Remove like if already liked
+            if (liked) {
+              likeBtn.classList.remove('liked');
+              liked = false;
+            }
+          });
         }
-      }, 500);
-      // Auto play if possible
-      setTimeout(() => { if (video.paused) video.play().catch(()=>{}); }, 200);
+      };
     }
     function closeVideoModal() {
       document.getElementById('videoModal').style.display = 'none';
