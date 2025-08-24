@@ -43,10 +43,6 @@
       cursor: pointer;
       margin-left: 1.2em;
     }
-    .logout-btn:hover {
-      background: linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);
-      color: #fff;
-    }
     .site-nav {
       display: flex;
       align-items: center;
@@ -276,50 +272,29 @@
 
     document.getElementById('logoutBtn').onclick = logout;
 
-    // Demo data for videos (replace with API fetch if available)
-    const demoUsers = [
-      { id: "1", username: "peace_creator", avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg" },
-      { id: "2", username: "energeticgal", avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg" },
-    ];
-    const demoVideos = [
-      {
-        id: "vid-1",
-        title: "Chill Beats to Relax/Stream To",
-        uploader: demoUsers[0],
-        thumb: "https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg"
-      },
-      {
-        id: "vid-2",
-        title: "Peaceful Nature Livestream",
-        uploader: demoUsers[1],
-        thumb: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80"
-      },
-      {
-        id: "vid-3",
-        title: "Late Night Coding & Vibes",
-        uploader: demoUsers[0],
-        thumb: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-      }
-    ];
-
-    function loadVideos() {
-      // In production, replace with actual API fetch for videos
-      const videosHtml = demoVideos.map(video => `
-        <div class="video-card">
-          <img class="video-thumb" src="${video.thumb}" alt="${video.title}">
-          <div class="video-info">
-            <img class="uploader-avatar" src="${video.uploader.avatarUrl}" alt="${video.uploader.username}">
-            <div class="video-meta">
-              <div class="video-title">${video.title}</div>
-              <div class="video-uploader">@${video.uploader.username}</div>
+    // Load videos from API
+    async function loadVideos() {
+      try {
+        const res = await fetch(API_BASE + 'videos', { credentials: 'include' });
+        const videos = await res.json();
+        const videosHtml = videos.map(video => `
+          <div class="video-card">
+            <img class="video-thumb" src="${video.thumb || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+            <div class="video-info">
+              <img class="uploader-avatar" src="${video.avatarUrl}" alt="${video.username}">
+              <div class="video-meta">
+                <div class="video-title">${video.title}</div>
+                <div class="video-uploader">@${video.username}</div>
+              </div>
             </div>
           </div>
-        </div>
-      `).join("");
-      document.getElementById("videosGrid").innerHTML = videosHtml;
+        `).join("");
+        document.getElementById("videosGrid").innerHTML = videosHtml;
+      } catch (e) {
+        document.getElementById("videosGrid").innerHTML = "<div style='color:#FF3CAC;'>Failed to load videos.</div>";
+      }
     }
 
-    // --- Search functionality ---
     document.getElementById('searchBtn').onclick = doSearch;
     document.getElementById('searchInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
@@ -333,7 +308,6 @@
         document.getElementById('searchResults').innerHTML = '';
         return;
       }
-      // Call your backend search endpoint
       try {
         const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=all`, { credentials: 'include' });
         const data = await res.json();
@@ -354,7 +328,7 @@
           html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Videos</div>`;
           html += data.videos.map(video => `
             <div class="video-card" style="margin-bottom:1em;">
-              <img class="video-thumb" src="${video.thumb}" alt="${video.title}">
+              <img class="video-thumb" src="${video.thumb || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
               <div class="video-info">
                 <img class="uploader-avatar" src="${video.uploaderAvatar || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.uploaderUsername}">
                 <div class="video-meta">
