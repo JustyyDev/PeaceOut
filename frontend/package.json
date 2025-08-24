@@ -1,0 +1,6 @@
+{
+  "name": "peaceout-frontend",
+  "version": "1.0.0",
+  "main": "pages/index.tsx",
+  "license": "MIT"
+}

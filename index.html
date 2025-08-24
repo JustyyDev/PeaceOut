@@ -2,38 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PeaceOut - YouTube Lookalike</title>
-  <link rel="stylesheet" href="./src/styles/youtube.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut ✌️</title>
+  <meta name="description" content="PeaceOut – The peaceful, energetic home for streaming and on-demand video." />
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
+      min-height: 100vh;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .logo {
+      width: 160px;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0px 6px 24px #40C9FF88);
+    }
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      color: #005C97;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      color: #FF3CAC;
+      font-weight: 700;
+    }
+    .brand {
+      margin-top: 2.5rem;
+      font-size: 1rem;
+      color: #005C97BB;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .nav {
+      margin-top: 2rem;
+    }
+    .nav a {
+      display: inline-block;
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 700;
+      margin: 0 0.5rem;
+      transition: transform 0.08s, box-shadow 0.15s;
+      box-shadow: 0 2px 12px #40C9FF33;
+    }
+    .nav a:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 24px #FF3CAC33;
+    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .subtitle {
+        font-size: 1rem;
+      }
+      .logo {
+        width: 100px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <script src="./src/scripts/youtube.js"></script>
-  <header class="yt-header">
-    <div class="yt-logo">PeaceOut</div>
-    <input class="yt-search" type="text" placeholder="Search" />
-    <div class="yt-user">👤</div>
-  </header>
-  <main class="yt-main">
-    <nav class="yt-sidebar">
-      <ul>
-        <li>Home</li>
-        <li>Trending</li>
-        <li>Subscriptions</li>
-        <li>Library</li>
-      </ul>
-    </nav>
-    <section class="yt-content">
-      <div class="yt-video-grid">
-        <div class="yt-video-card">
-          <img src="https://placehold.co/320x180" alt="Video thumbnail" />
-          <div class="yt-video-info">
-            <h3>Sample Video Title</h3>
-            <p>Channel Name • 1M views • 1 day ago</p>
-          </div>
-        </div>
-        <!-- Repeat .yt-video-card for more videos -->
-      </div>
-    </section>
-  </main>
+  <div class="container">
+    <img class="logo" src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" />
+    <h1>Welcome to PeaceOut ✌️</h1>
+    <div class="subtitle">Relax, create, stream, and vibe together</div>
+    <div class="nav">
+      <a href="#">Home</a>
+      <a href="#">Live</a>
+      <a href="#">Videos</a>
+      <a href="#">Discover</a>
+      <a href="#">Profile</a>
+    </div>
+    <div class="brand">
+      The peaceful, energetic home for streaming and on-demand video.
+    </div>
+  </div>
 </body>
 </html>
