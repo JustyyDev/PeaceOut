@@ -97,6 +97,16 @@
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
 
+    // Check session and redirect if already logged in
+    async function checkSession() {
+      try {
+        const res = await fetch(API_BASE + 'me', { credentials: 'include' });
+        if (res.ok) {
+          window.location.href = 'homepage.html';
+        }
+      } catch {}
+    }
+
     function setMsg(msg, isSuccess) {
       const msgDiv = document.getElementById('authMsg');
       msgDiv.textContent = msg || '';
@@ -134,7 +144,7 @@
           const data = await res.json();
           if (res.ok) {
             setMsg('Login successful! Redirecting...', true);
-            setTimeout(() => window.location.href = 'homepage.html', 1000);
+            setTimeout(() => window.location.href = 'homepage.html', 800);
           } else {
             setMsg(data.error || 'Login failed.');
           }
@@ -189,7 +199,7 @@
           const data = await res.json();
           if (res.ok) {
             setMsg('Registration successful! Logging you in...', true);
-            setTimeout(() => window.location.href = 'homepage.html', 1000);
+            setTimeout(() => window.location.href = 'homepage.html', 800);
           } else {
             setMsg(data.error || 'Registration failed.');
           }
@@ -201,6 +211,9 @@
 
     window.showLoginForm = showLoginForm;
     window.showRegisterForm = showRegisterForm;
+
+    // On load
+    checkSession();
     showLoginForm();
   </script>
 </body>
