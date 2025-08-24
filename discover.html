@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut — Discover</title>
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style>
+    body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
+    .topbar, .site-nav { background: #fff; }
+    .discover-container { max-width: 900px; margin: 3em auto; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em; }
+    .search-bar { display: flex; gap:1em; align-items: center; margin-bottom: 2em; }
+    .search-bar input { flex:1; padding:0.75em; font-size:1.1em; border-radius:12px; border:1.5px solid #40C9FF; }
+    .tabs { margin-bottom:1.2em; }
+    .tabs button { background: #B8FFF9; border:none; border-radius:18px; padding:0.5em 1.4em; font-weight:700; color:#005C97; margin-right:0.8em; cursor:pointer; }
+    .tabs button.active { background: linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%); color:#fff; }
+    .results { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap:1.6em; }
+    .user-card, .video-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; }
+    .user-card img, .video-card img { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #40C9FF; }
+    .user-info { flex:1; }
+    .user-info .username { font-weight:800; color:#005C97; font-size:1.09em; }
+    .user-info .bio { font-size:0.97em; color:#888; margin-top:0.3em; }
+    .video-info { flex:1; }
+    .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
+    .video-uploader { font-size:0.96em; color:#40C9FF; }
+    @media (max-width:600px) { .discover-container{padding:1em;} .results{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <!-- reuse your topbar here -->
+    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" class="logo" /></a>
+    <span class="welcome">Discover</span>
+  </div>
+  <nav class="site-nav">
+    <a href="homepage.html">Home</a>
+    <a href="upload.html">Upload</a>
+    <a href="discover.html" class="active">Discover</a>
+    <!-- ...other links... -->
+  </nav>
+  <div class="discover-container">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search videos, users, etc.">
+    </div>
+    <div class="tabs">
+      <button class="active" data-type="all">All</button>
+      <button data-type="videos">Videos</button>
+      <button data-type="users">Users</button>
+    </div>
+    <div class="results" id="results">
+      <!-- Results appear here -->
+    </div>
+  </div>
+  <script>
+    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    let searchType = 'all';
+
+    document.querySelectorAll('.tabs button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        searchType = btn.getAttribute('data-type');
+        doSearch();
+      };
+    });
+
+    document.getElementById('searchInput').oninput = () => { doSearch(); };
+
+    async function doSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) { document.getElementById('results').innerHTML = ''; return; }
+      const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=${searchType}`, { credentials: 'include' });
+      const data = await res.json();
+      let html = '';
+      if (searchType === 'all' || searchType === 'users') {
+        (data.users || []).forEach(user => {
+          html += `
+            <div class="user-card">
+              <img src="${user.avatarUrl}" alt="${user.username}">
+              <div class="user-info">
+                <div class="username">@${user.username}</div>
+                <div class="bio">${user.bio||''}</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      if (searchType === 'all' || searchType === 'videos') {
+        (data.videos || []).forEach(video => {
+          html += `
+            <div class="video-card">
+              <img src="${video.thumb}" alt="${video.title}">
+              <div class="video-info">
+                <div class="video-title">${video.title}</div>
+                <div class="video-uploader">@${video.uploaderUsername}</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
+    }
+  </script>
+</body>
+</html>

@@ -83,6 +83,37 @@
       padding: 2.3em 2em 2em 2em;
       min-height: 300px;
     }
+    .search-bar {
+      margin: 0 auto 2em auto;
+      max-width: 500px;
+      display: flex;
+      gap: 0.7em;
+      align-items: center;
+    }
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 0.75em 1em;
+      font-size: 1.08em;
+      border-radius: 14px;
+      border: 1.5px solid #40C9FF;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .search-bar button {
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1em;
+      padding: 0.7em 1.5em;
+      cursor: pointer;
+    }
+    .search-results {
+      margin-top: 1em;
+      margin-bottom: 2em;
+      min-height: 2em;
+    }
     .videos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -144,6 +175,36 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .user-card {
+      background:#f8f8f9;
+      border-radius:14px;
+      box-shadow:0 2px 10px #40C9FF18;
+      padding:1.1em;
+      display:flex;
+      align-items:center;
+      gap:1.2em;
+      margin-bottom: 1em;
+    }
+    .user-card img {
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      object-fit:cover;
+      border:2px solid #40C9FF;
+    }
+    .user-info {
+      flex:1;
+    }
+    .user-info .username {
+      font-weight:800;
+      color:#005C97;
+      font-size:1.09em;
+    }
+    .user-info .bio {
+      font-size:0.97em;
+      color:#888;
+      margin-top:0.3em;
+    }
     @media (max-width: 700px) {
       .videos-grid {
         grid-template-columns: 1fr;
@@ -153,6 +214,7 @@
         padding: 1.2em 0.3em;
       }
       .topbar { padding: 1em 0.6em 1em 0.6em; }
+      .search-bar { max-width: 100%; }
     }
   </style>
 </head>
@@ -167,12 +229,18 @@
   <nav class="site-nav">
     <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
     <a href="upload.html">Upload</a>
+    <a href="discover.html">Discover</a>
     <a href="about-us.html">About</a>
     <a href="faq.html">FAQ</a>
     <a href="contact.html">Contact</a>
     <a href="edit-profile.html">Profile</a>
   </nav>
   <div class="main-content" id="mainContent">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search videos, users, etc.">
+      <button id="searchBtn">Search</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
     <h2>PeaceOut Community</h2>
     <p>Discover new videos, join live streams, and connect with creators!</p>
     <h1 style="font-size:2.1rem;color:#005C97;font-weight:900;text-align:left;margin-bottom:0.2em;">Latest Uploads</h1>
@@ -249,6 +317,61 @@
         </div>
       `).join("");
       document.getElementById("videosGrid").innerHTML = videosHtml;
+    }
+
+    // --- Search functionality ---
+    document.getElementById('searchBtn').onclick = doSearch;
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        doSearch();
+      }
+    });
+
+    async function doSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) {
+        document.getElementById('searchResults').innerHTML = '';
+        return;
+      }
+      // Call your backend search endpoint
+      try {
+        const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=all`, { credentials: 'include' });
+        const data = await res.json();
+        let html = '';
+        if (data.users && data.users.length > 0) {
+          html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Users</div>`;
+          html += data.users.map(user => `
+            <div class="user-card">
+              <img src="${user.avatarUrl}" alt="${user.username}">
+              <div class="user-info">
+                <div class="username">@${user.username}</div>
+                <div class="bio">${user.bio||''}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+        if (data.videos && data.videos.length > 0) {
+          html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Videos</div>`;
+          html += data.videos.map(video => `
+            <div class="video-card" style="margin-bottom:1em;">
+              <img class="video-thumb" src="${video.thumb}" alt="${video.title}">
+              <div class="video-info">
+                <img class="uploader-avatar" src="${video.uploaderAvatar || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.uploaderUsername}">
+                <div class="video-meta">
+                  <div class="video-title">${video.title}</div>
+                  <div class="video-uploader">@${video.uploaderUsername}</div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+        if (!html) {
+          html = `<div style="color:#888;">No results found.</div>`;
+        }
+        document.getElementById('searchResults').innerHTML = html;
+      } catch {
+        document.getElementById('searchResults').innerHTML = `<div style="color:#FF3CAC;">Search failed. Try again later.</div>`;
+      }
     }
 
     checkSession();
