@@ -3,61 +3,118 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Upload Video — PeaceOut</title>
+  <title>PeaceOut — Upload Video</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    html, body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh;}
-    .container { max-width: 480px; margin: 3rem auto; background: #fff; border-radius: 24px; box-shadow: 0 6px 24px #40C9FF33; padding: 2.5rem 2rem;}
-    .logo { width: 60px; display: block; margin: 0 auto 1.2rem;}
-    h1 { text-align: center; color: #005C97; font-size: 2.1rem; margin-bottom: 1.6rem;}
-    label { display: block; font-weight: 700; color: #40C9FF; margin:1.1rem 0 0.3rem;}
-    input[type=file], input[type=text], textarea { width: 100%; border: 1.5px solid #40C9FF; border-radius: 12px; padding: 0.7rem; font-size: 1rem; margin-bottom: 0.8rem;}
-    textarea { resize: vertical; }
-    .thumb-preview { width:100%; max-width:240px; display:block; margin:0.5rem auto 1rem; border-radius:12px; box-shadow:0 2px 12px #40C9FF22;}
-    button { width: 100%; background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); color: #fff; border:none; border-radius: 22px; font-weight: 700; font-size: 1.1rem; padding: 0.8rem 0; cursor:pointer; margin-top: 1.2rem;}
-    button:hover { box-shadow: 0 6px 24px #FF3CAC33; }
-    .success-msg { color: #40C9FF; text-align: center; font-weight: 700; margin-top: 1.4rem;}
+    body {
+      background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 400px;
+      margin: 4rem auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 6px 24px #40C9FF33;
+      padding: 2.2em 2em;
+    }
+    h1 {
+      text-align: center;
+      color: #005C97;
+      font-size: 2em;
+      margin-bottom: 1.3em;
+    }
+    label {
+      display: block;
+      color: #40C9FF;
+      font-weight: 700;
+      margin-top: 1em;
+    }
+    input, textarea {
+      width: 100%;
+      border: 1.3px solid #40C9FF;
+      border-radius: 10px;
+      padding: 0.7em;
+      font-size: 1em;
+      margin-bottom: 0.8em;
+      margin-top: 0.2em;
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 1.1em;
+      padding: 0.85em 0;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:hover {
+      box-shadow: 0 6px 24px #FF3CAC33;
+    }
+    .msg {
+      color:#FF3CAC;
+      text-align:center;
+      min-height:1.3em;
+      margin-bottom:0.4em;
+    }
+    .success { color: #40C9FF; }
     @media (max-width: 600px) { .container {padding:1.1rem 0.5rem;} }
   </style>
 </head>
 <body>
-  <form class="container" id="uploadForm">
-    <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" class="logo" />
+  <form class="container" id="uploadForm" autocomplete="off" enctype="multipart/form-data">
     <h1>Upload Video</h1>
+    <label for="videoTitle">Title</label>
+    <input type="text" id="videoTitle" name="title" maxlength="80" required />
     <label for="videoFile">Video File</label>
-    <input type="file" id="videoFile" accept="video/*" required />
-    <label for="title">Title</label>
-    <input type="text" id="title" maxlength="100" required />
-    <label for="description">Description</label>
-    <textarea id="description" rows="3" maxlength="500"></textarea>
-    <label for="thumb">Thumbnail (optional)</label>
-    <input type="file" id="thumb" accept="image/*" />
-    <img class="thumb-preview" id="thumbPreview" style="display:none" />
+    <input type="file" id="videoFile" name="video" accept="video/*" required />
+    <div class="msg" id="uploadMsg"></div>
     <button type="submit">Upload</button>
-    <div class="success-msg" id="successMsg"></div>
+    <div style="text-align:center;margin-top:1em;">
+      <a href="homepage.html" style="color:#40C9FF;text-decoration:underline;">Back to Home</a>
+    </div>
   </form>
   <script>
-    // Thumbnail preview
-    document.getElementById('thumb').addEventListener('change', function(evt) {
-      const file = evt.target.files[0];
-      const preview = document.getElementById('thumbPreview');
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = '';
-      } else {
-        preview.style.display = 'none';
-      }
-    });
-    // Demo "upload"
-    document.getElementById('uploadForm').addEventListener('submit', function(e){
+    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+
+    document.getElementById('uploadForm').onsubmit = async function(e) {
       e.preventDefault();
-      // In a real app: POST to backend, handle errors, etc.
-      document.getElementById('successMsg').innerText = "Your video was uploaded! (This is a demo)";
-      setTimeout(()=>{ document.getElementById('successMsg').innerText = ""; }, 3000);
-      document.getElementById('uploadForm').reset();
-      document.getElementById('thumbPreview').style.display = 'none';
-    });
+      const msg = document.getElementById('uploadMsg');
+      msg.textContent = '';
+      msg.classList.remove('success');
+      const file = document.getElementById('videoFile').files[0];
+      const title = document.getElementById('videoTitle').value.trim();
+      if (!file || !title) {
+        msg.textContent = 'Please enter a title and select a file.';
+        return;
+      }
+      const formData = new FormData();
+      formData.append('video', file);
+      formData.append('title', title);
+
+      try {
+        const res = await fetch(API_BASE + 'videos/upload', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        });
+        const data = await res.json();
+        if (res.ok) {
+          msg.textContent = 'Upload successful!';
+          msg.classList.add('success');
+          setTimeout(() => window.location.href = 'homepage.html', 1000);
+        } else {
+          msg.textContent = data.error || 'Upload failed.';
+        }
+      } catch {
+        msg.textContent = 'Network error.';
+      }
+    };
   </script>
 </body>
 </html>
