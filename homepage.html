@@ -6,10 +6,12 @@
   <title>PeaceOut — Home</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
-    body {
-      background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);
-      font-family: 'Inter', sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body {
+      height: 100%;
       margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
       min-height: 100vh;
     }
     .topbar {
@@ -45,8 +47,35 @@
       background: linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);
       color: #fff;
     }
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      background: #fff;
+      padding: 0.7rem 2rem 0.3rem 2rem;
+      box-shadow: 0 2px 12px #40C9FF11;
+      margin-bottom: 1.2rem;
+      border-radius: 0 0 16px 16px;
+    }
+    .site-nav a {
+      color: #005C97;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 20px;
+      transition: background 0.14s;
+    }
+    .site-nav a:hover {
+      background: #B8FFF9;
+      color: #FF3CAC;
+    }
+    .site-nav img {
+      width: 30px;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
     .main-content {
-      max-width: 700px;
+      max-width: 1100px;
       margin: 3em auto 0 auto;
       background: #fff;
       border-radius: 16px;
@@ -54,8 +83,75 @@
       padding: 2.3em 2em 2em 2em;
       min-height: 300px;
     }
-    @media (max-width: 600px) {
-      .main-content { padding: 1.2em 0.3em; }
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .video-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px #40C9FF22;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.13s, box-shadow 0.15s;
+    }
+    .video-card:hover {
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 10px 32px #FF3CAC33;
+    }
+    .video-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #B8FFF9;
+    }
+    .video-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+    .uploader-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #FF3CAC;
+      object-fit: cover;
+    }
+    .video-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+      min-width: 0;
+    }
+    .video-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #005C97;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .video-uploader {
+      font-size: 0.98rem;
+      color: #40C9FF;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 700px) {
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+      .main-content {
+        margin-top: 1rem;
+        padding: 1.2em 0.3em;
+      }
       .topbar { padding: 1em 0.6em 1em 0.6em; }
     }
   </style>
@@ -68,10 +164,21 @@
     </div>
     <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
-  <div class="main-content">
+  <nav class="site-nav">
+    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
+    <a href="upload.html">Upload</a>
+    <a href="about-us.html">About</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contact.html">Contact</a>
+    <a href="edit-profile.html">Profile</a>
+  </nav>
+  <div class="main-content" id="mainContent">
     <h2>PeaceOut Community</h2>
     <p>Discover new videos, join live streams, and connect with creators!</p>
-    <!-- You can add trending videos, live streams, etc. here -->
+    <h1 style="font-size:2.1rem;color:#005C97;font-weight:900;text-align:left;margin-bottom:0.2em;">Latest Uploads</h1>
+    <div class="videos-grid" id="videosGrid">
+      <!-- Videos will be loaded here -->
+    </div>
   </div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
@@ -82,6 +189,7 @@
         const data = await res.json();
         if (res.ok && data && data.username) {
           document.getElementById('username').textContent = data.username;
+          loadVideos();
         } else {
           window.location.href = 'auth.html';
         }
@@ -99,6 +207,49 @@
     }
 
     document.getElementById('logoutBtn').onclick = logout;
+
+    // Demo data for videos (replace with API fetch if available)
+    const demoUsers = [
+      { id: "1", username: "peace_creator", avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg" },
+      { id: "2", username: "energeticgal", avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg" },
+    ];
+    const demoVideos = [
+      {
+        id: "vid-1",
+        title: "Chill Beats to Relax/Stream To",
+        uploader: demoUsers[0],
+        thumb: "https://i.ytimg.com/vi/5qap5aO4i9A/maxresdefault.jpg"
+      },
+      {
+        id: "vid-2",
+        title: "Peaceful Nature Livestream",
+        uploader: demoUsers[1],
+        thumb: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "vid-3",
+        title: "Late Night Coding & Vibes",
+        uploader: demoUsers[0],
+        thumb: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+      }
+    ];
+
+    function loadVideos() {
+      // In production, replace with actual API fetch for videos
+      const videosHtml = demoVideos.map(video => `
+        <div class="video-card">
+          <img class="video-thumb" src="${video.thumb}" alt="${video.title}">
+          <div class="video-info">
+            <img class="uploader-avatar" src="${video.uploader.avatarUrl}" alt="${video.uploader.username}">
+            <div class="video-meta">
+              <div class="video-title">${video.title}</div>
+              <div class="video-uploader">@${video.uploader.username}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("videosGrid").innerHTML = videosHtml;
+    }
 
     checkSession();
   </script>
