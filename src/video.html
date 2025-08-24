@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PeaceOut - Video Page</title>
+  <link rel="stylesheet" href="./styles/youtube.css" />
+</head>
+<body>
+  <script src="./scripts/youtube.js"></script>
+</head>
+<body>
+  <header class="yt-header">
+    <div class="yt-logo">PeaceOut</div>
+    <input class="yt-search" type="text" placeholder="Search" />
+    <div class="yt-user">👤</div>
+  </header>
+  <main class="yt-main">
+    <nav class="yt-sidebar">
+      <ul>
+        <li>Home</li>
+        <li>Trending</li>
+        <li>Subscriptions</li>
+        <li>Library</li>
+      </ul>
+    </nav>
+    <section class="yt-content">
+      <div style="display: flex; gap: 32px;">
+        <div style="flex: 2;">
+          <video controls width="100%" poster="https://placehold.co/640x360">
+            <source src="#" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <h2 style="margin-top: 16px;">Sample Video Title</h2>
+          <p>Channel Name • 1M views • 1 day ago</p>
+        </div>
+        <aside style="flex: 1;">
+          <h3>Up next</h3>
+          <div class="yt-video-card" style="margin-bottom: 16px;">
+            <img src="https://placehold.co/320x180" alt="Video thumbnail" />
+            <div class="yt-video-info">
+              <h3>Another Video</h3>
+              <p>Channel Name • 500K views</p>
+            </div>
+          </div>
+          <!-- More up next videos -->
+        </aside>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

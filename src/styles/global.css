@@ -1,7 +1,7 @@
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #19171d;
-  color: #eee;
+  background: #0F172A; /* Rich Navy Black */
+  color: #fff;
   margin: 0;
   padding: 0;
 }
@@ -10,9 +10,9 @@ body {
   max-width: 300px;
   margin: 80px auto;
   padding: 2em;
-  background: #29262f;
+  background: #18103a;
   border-radius: 12px;
-  box-shadow: 0 2px 16px #0004;
+  box-shadow: 0 2px 16px #7C3AED22;
   text-align: center;
 }
 
@@ -22,20 +22,29 @@ input, button {
   padding: 0.7em;
   border: none;
   border-radius: 6px;
+  background: #18103a;
+  color: #fff;
 }
 
 .button, button {
-  background: #5c4dff;
+  background: #7C3AED; /* Violet Purple */
   color: #fff;
   cursor: pointer;
+  border: 2px solid #06B6D4; /* Teal Cyan accent */
+  transition: background 0.2s, border 0.2s;
+}
+.button:hover, button:hover {
+  background: #06B6D4;
+  color: #0F172A;
+  border-color: #F472B6;
 }
 
 .stream-player {
   max-width: 700px;
   margin: 30px auto;
-  background: #23202a;
-  border-radius: 8px;
-  box-shadow: 0 2px 20px #0009;
+  background: #18103a;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px #7C3AED22;
   padding: 1.5em;
 }
 
@@ -48,36 +57,40 @@ input, button {
 .avatar {
   width: 52px;
   border-radius: 50%;
+  border: 2px solid #F472B6;
 }
 
 .live-badge {
   color: #fff;
-  background: #e23;
+  background: #06B6D4;
   border-radius: 6px;
   padding: 2px 10px;
   font-size: 0.9em;
   margin-left: 8px;
+  font-weight: bold;
 }
 
 .chatbox {
   height: 200px;
-  background: #18151a;
+  background: #18103a;
   margin-top: 1em;
   overflow-y: auto;
   border-radius: 8px;
   padding: 1em;
+  color: #F472B6;
 }
 
 .chat-message {
   margin-bottom: 0.5em;
   font-family: monospace;
+  color: #94A3B8;
 }
 
 .corrupted-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: #0a0811cc;
-  color: #f55;
+  background: #0F172Aee;
+  color: #F472B6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,6 +101,6 @@ input, button {
 }
 
 @keyframes glitchy {
-  0% { text-shadow: 2px 2px #fff2, -2px 0 #f0f; }
-  100% { text-shadow: -2px -2px #fff2, 2px 0 #0ff; }
+  0% { text-shadow: 2px 2px #F472B6, -2px 0 #06B6D4; }
+  100% { text-shadow: -2px -2px #7C3AED, 2px 0 #94A3B8; }
 }
