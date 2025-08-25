@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut — Profile</title>
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style id="themeStyle">
+    /* Default theme, will be replaced dynamically */
+    body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); }
+    .profile-header { background: #fff; border-radius: 18px; box-shadow:0 2px 12px #40C9FF22; margin:2em auto 1em auto; padding:2em 2em 1.2em 2em; max-width:700px; display:flex; gap:2em; align-items:center; }
+    .avatar { width:100px; height:100px; border-radius:50%; border:3px solid #40C9FF; object-fit:cover; }
+    .profile-meta { flex:1; }
+    .display-name { font-size:2em; font-weight:900; color:#005C97; }
+    .username { color:#40C9FF;font-size:1.13em;margin-bottom:0.2em; }
+    .bio { margin:0.6em 0; color:#888;}
+    .follow-btn { background:linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%); color:#fff; border:none; border-radius:18px; padding:0.5em 1.4em; font-weight:700; font-size:1em; cursor:pointer; }
+    .stats { margin:0.7em 0 0 0; color:#333; font-size:1.02em; }
+    .theme-badge { display:inline-block; padding:0.25em 1em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.98em; margin-left:1em;}
+    .edit-btn { color:#40C9FF; margin-left:1em; text-decoration:underline; font-size:0.96em; cursor:pointer;}
+    .videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2em; margin:2em auto; max-width:900px;}
+    .video-card { background:#fff; border-radius:16px; box-shadow:0 4px 16px #40C9FF22; overflow:hidden; display:flex; flex-direction:column; }
+    .video-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; background:#B8FFF9; }
+    .video-info { padding:1em; }
+    .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.2em;}
+    .video-date { color:#888; font-size:0.95em;}
+    @media (max-width:700px) {
+      .profile-header {flex-direction:column;align-items:center;padding:1em;}
+      .avatar {width:70px;height:70px;}
+      .display-name {font-size:1.4em;}
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" style="background:#fff;padding:0.7rem 2rem 0.3rem 2rem;">
+    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" style="width:30px;vertical-align:middle;margin-right:0.5rem;" />Home</a>
+    <a href="upload.html">Upload</a>
+    <a href="discover.html">Discover</a>
+    <a href="about-us.html">About</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contact.html">Contact</a>
+    <a href="#" id="editProfileBtn" style="display:none;">Edit Profile</a>
+  </nav>
+  <div class="profile-header" id="profileHeader">
+    <!-- Populated by JS -->
+  </div>
+  <div class="videos-grid" id="videosGrid"></div>
+  <script>
+    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('u');
+    let currentUsername = '';
+    let isOwnProfile = false;
+    let isFollowing = false;
+    let profileId = null;
+
+    const THEMES = {
+      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);}`,
+      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+        .profile-header{background:#FFDEE9;}
+        .display-name{color:#FF3CAC;}
+        .theme-badge{background:#FF3CAC;color:#fff;}`,
+      "classic": `body{background:#fff;}
+        .profile-header{background:#FAFAFA;}
+        .display-name{color:#222;}
+        .theme-badge{background:#e0e0e0;color:#333;}`,
+      "night": `body{background:#1a2233;}
+        .profile-header{background:#222;color:#fff;}
+        .display-name{color:#B8FFF9;}
+        .bio,.username,.stats{color:#B8FFF9;}
+        .theme-badge{background:#222;color:#B8FFF9;}
+        .video-card{background:#2c3552;}
+        .video-title{color:#B8FFF9;}
+        .video-date{color:#ccc;}`
+    };
+
+    async function fetchProfile() {
+      if (!username) return;
+      const res = await fetch(`${API_BASE}users/${encodeURIComponent(username)}`, { credentials: 'include' });
+      if (!res.ok) {
+        document.getElementById('profileHeader').innerHTML = "<div style='color:#FF3CAC;'>User not found.</div>";
+        return;
+      }
+      const user = await res.json();
+      profileId = user.id;
+      currentUsername = user.username;
+      // Detect if this is own profile (for edit link)
+      const meRes = await fetch(API_BASE + 'me', { credentials: 'include' });
+      let me = null;
+      if (meRes.ok) me = await meRes.json();
+      isOwnProfile = me && me.username === user.username;
+      // Set theme
+      setTheme(user.theme);
+      // Render
+      document.getElementById('profileHeader').innerHTML = `
+        <img class="avatar" src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" />
+        <div class="profile-meta">
+          <div class="display-name">${user.displayName || user.username}</div>
+          <div class="username">@${user.username}</div>
+          <div class="bio">${user.bio || ''}</div>
+          <div class="stats">
+            <span>${user.followers} followers</span> · 
+            <span>${user.following} following</span> 
+            <span class="theme-badge">${user.theme ? user.theme.charAt(0).toUpperCase()+user.theme.slice(1) : "Peaceful"}</span>
+            ${isOwnProfile ? `<a href="edit-profile.html" class="edit-btn" id="editProfileBtn2">Edit Profile</a>` : `<button class="follow-btn" id="followBtn">Follow</button>`}
+          </div>
+        </div>
+      `;
+      if (isOwnProfile) {
+        document.getElementById('editProfileBtn').href = 'edit-profile.html';
+        document.getElementById('editProfileBtn').style.display = '';
+        // Show edit link inline as well
+      } else {
+        document.getElementById('editProfileBtn').style.display = 'none';
+        updateFollowBtn();
+      }
+      // Show videos
+      document.getElementById('videosGrid').innerHTML = (user.videos || []).map(video => `
+        <div class="video-card">
+          <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Video'}" alt="${video.title}">
+          <div class="video-info">
+            <div class="video-title">${video.title}</div>
+            <div class="video-date">${(new Date(video.createdAt)).toLocaleString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    function setTheme(theme) {
+      let style = THEMES[theme] || THEMES["peaceful"];
+      document.getElementById('themeStyle').textContent = style;
+    }
+    async function updateFollowBtn() {
+      const btn = document.getElementById('followBtn');
+      if (!btn) return;
+      const res = await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { credentials: 'include' });
+      const data = await res.json();
+      isFollowing = !!data.follows;
+      btn.textContent = isFollowing ? 'Unfollow' : 'Follow';
+      btn.onclick = async function() {
+        if (!isFollowing) {
+          await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { method: 'POST', credentials: 'include' });
+        } else {
+          await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { method: 'DELETE', credentials: 'include' });
+        }
+        fetchProfile();
+      };
+    }
+    fetchProfile();
+  </script>
+</body>
+</html>

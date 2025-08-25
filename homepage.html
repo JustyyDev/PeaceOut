@@ -5,255 +5,47 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Home</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
-      min-height: 100vh;
-    }
-    .topbar {
-      background: #fff;
-      padding: 1.5em 2em 1.2em 2em;
-      border-radius: 0 0 18px 18px;
-      box-shadow: 0 2px 12px #40C9FF22;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      width: 48px;
-      margin-right: 1.1em;
-    }
-    .welcome {
-      font-size: 1.4em;
-      color: #005C97;
-      font-weight: 800;
-    }
-    .logout-btn {
-      background:linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%);
-      color: #fff;
-      border: none;
-      border-radius: 18px;
-      padding: 0.6em 1.3em;
-      font-weight: 700;
-      font-size: 1em;
-      cursor: pointer;
-      margin-left: 1.2em;
-    }
-    .site-nav {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      background: #fff;
-      padding: 0.7rem 2rem 0.3rem 2rem;
-      box-shadow: 0 2px 12px #40C9FF11;
-      margin-bottom: 1.2rem;
-      border-radius: 0 0 16px 16px;
-    }
-    .site-nav a {
-      color: #005C97;
-      font-weight: 700;
-      text-decoration: none;
-      padding: 0.4rem 1.2rem;
-      border-radius: 20px;
-      transition: background 0.14s;
-    }
-    .site-nav a:hover {
-      background: #B8FFF9;
-      color: #FF3CAC;
-    }
-    .site-nav img {
-      width: 30px;
-      vertical-align: middle;
-      margin-right: 0.5rem;
-    }
-    .main-content {
-      max-width: 1100px;
-      margin: 3em auto 0 auto;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 6px 24px #40C9FF22;
-      padding: 2.3em 2em 2em 2em;
-      min-height: 300px;
-    }
-    .hero-banner {
-      background: linear-gradient(90deg, #40C9FF11 0%, #FF3CAC11 100%);
-      border-radius: 14px;
-      padding: 2em 1.5em 2em 1.5em;
-      box-shadow: 0 1px 8px #40C9FF11;
-      margin-bottom: 2em;
-      text-align: center;
-    }
-    .hero-title {
-      font-size: 2rem;
-      font-weight: 900;
-      color: #005C97;
-      margin-bottom: 0.4em;
-    }
-    .hero-sub {
-      color: #FF3CAC;
-      font-size: 1.15em;
-      font-weight: 700;
-      margin-bottom: 1em;
-    }
-    .go-live-btn {
-      background:linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%);
-      color:#fff;
-      border:none;
-      border-radius:30px;
-      font-size:1.12em;
-      font-weight:800;
-      padding:0.7em 2.2em;
-      cursor:pointer;
-      margin-top:1.2em;
-      box-shadow:0 2px 12px #FF3CAC22;
-      transition:box-shadow 0.13s, transform 0.13s;
-    }
-    .go-live-btn:hover {
-      box-shadow:0 8px 32px #40C9FF22;
-      transform:translateY(-2px) scale(1.02);
-    }
-    .search-bar {
-      margin: 0 auto 2em auto;
-      max-width: 500px;
-      display: flex;
-      gap: 0.7em;
-      align-items: center;
-    }
-    .search-bar input[type="text"] {
-      flex: 1;
-      padding: 0.75em 1em;
-      font-size: 1.08em;
-      border-radius: 14px;
-      border: 1.5px solid #40C9FF;
-      outline: none;
-      transition: border 0.15s;
-    }
-    .search-bar button {
-      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 1em;
-      padding: 0.7em 1.5em;
-      cursor: pointer;
-    }
-    .search-results {
-      margin-top: 1em;
-      margin-bottom: 2em;
-      min-height: 2em;
-    }
-    .section-title {
-      font-size: 1.35em;
-      font-weight: 900;
-      color: #005C97;
-      margin-top: 2.5em;
-      margin-bottom: 0.7em;
-      text-align: left;
-    }
-    .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-    .video-card {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 16px #40C9FF22;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.13s, box-shadow 0.15s;
-    }
-    .video-card:hover {
-      transform: scale(1.03) translateY(-2px);
-      box-shadow: 0 10px 32px #FF3CAC33;
-    }
-    .video-thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
-      object-fit: cover;
-      background: #B8FFF9;
-    }
-    .video-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem;
-    }
-    .uploader-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 2px solid #FF3CAC;
-      object-fit: cover;
-    }
-    .video-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-      flex: 1;
-      min-width: 0;
-    }
-    .video-title {
-      font-size: 1.08rem;
-      font-weight: 700;
-      color: #005C97;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .video-uploader {
-      font-size: 0.98rem;
-      color: #40C9FF;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .user-card {
-      background:#f8f8f9;
-      border-radius:14px;
-      box-shadow:0 2px 10px #40C9FF18;
-      padding:1.1em;
-      display:flex;
-      align-items:center;
-      gap:1.2em;
-      margin-bottom: 1em;
-    }
-    .user-card img {
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      object-fit:cover;
-      border:2px solid #40C9FF;
-    }
-    .user-info {
-      flex:1;
-    }
-    .user-info .username {
-      font-weight:800;
-      color:#005C97;
-      font-size:1.09em;
-    }
-    .user-info .bio {
-      font-size:0.97em;
-      color:#888;
-      margin-top:0.3em;
-    }
+  <style id="themeStyle">
+    /* Default theme: Peaceful */
+    body { background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%); min-height: 100vh; margin:0; }
+    .topbar, .site-nav { background: #fff; }
+    .topbar { padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px; box-shadow: 0 2px 12px #40C9FF22; display: flex; align-items: center; justify-content: space-between; }
+    .logo { width: 48px; margin-right: 1.1em; }
+    .welcome { font-size: 1.4em; color: #005C97; font-weight: 800; }
+    .logout-btn { background:linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%); color: #fff; border: none; border-radius: 18px; padding: 0.6em 1.3em; font-weight: 700; font-size: 1em; cursor: pointer; margin-left: 1.2em; }
+    .site-nav { display: flex; align-items: center; gap: 1.2rem; background: #fff; padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11; margin-bottom: 1.2rem; border-radius: 0 0 16px 16px; }
+    .site-nav a { color: #005C97; font-weight: 700; text-decoration: none; padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s; }
+    .site-nav a.active, .site-nav a:hover { background: #B8FFF9; color: #FF3CAC; }
+    .site-nav img { width: 30px; vertical-align: middle; margin-right: 0.5rem; }
+    .main-content { max-width: 1150px; margin: 3em auto 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2.3em 2em 2em 2em; min-height: 300px; }
+    .hero-banner { background: linear-gradient(90deg, #40C9FF11 0%, #FF3CAC11 100%); border-radius: 14px; padding: 2em 1.5em 2em 1.5em; box-shadow: 0 1px 8px #40C9FF11; margin-bottom: 2em; text-align: center; }
+    .hero-title { font-size: 2rem; font-weight: 900; color: #005C97; margin-bottom: 0.4em; }
+    .hero-sub { color: #FF3CAC; font-size: 1.15em; font-weight: 700; margin-bottom: 1em; }
+    .go-live-btn { background:linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%); color:#fff; border:none; border-radius:30px; font-size:1.12em; font-weight:800; padding:0.7em 2.2em; cursor:pointer; margin-top:1.2em; box-shadow:0 2px 12px #FF3CAC22; transition:box-shadow 0.13s, transform 0.13s; }
+    .go-live-btn:hover { box-shadow:0 8px 32px #40C9FF22; transform:translateY(-2px) scale(1.02);}
+    .search-bar { margin: 0 auto 2em auto; max-width: 500px; display: flex; gap: 0.7em; align-items: center; }
+    .search-bar input[type="text"] { flex: 1; padding: 0.75em 1em; font-size: 1.08em; border-radius: 14px; border: 1.5px solid #40C9FF; outline: none; transition: border 0.15s; }
+    .search-bar button { background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); color: #fff; border: none; border-radius: 14px; font-weight: 700; font-size: 1em; padding: 0.7em 1.5em; cursor: pointer; }
+    .search-results { margin-top: 1em; margin-bottom: 2em; min-height: 2em; }
+    .section-title { font-size: 1.35em; font-weight: 900; color: #005C97; margin-top: 2.5em; margin-bottom: 0.7em; text-align: left; }
+    .videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 2rem; margin-top: 2rem; }
+    .video-card { background: #fff; border-radius: 20px; box-shadow: 0 4px 16px #40C9FF22; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.13s, box-shadow 0.15s; cursor:pointer; }
+    .video-card:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 10px 32px #FF3CAC33; }
+    .video-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #B8FFF9; }
+    .video-info { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; }
+    .uploader-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #FF3CAC; object-fit: cover; }
+    .video-meta { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
+    .video-title { font-size: 1.08rem; font-weight: 700; color: #005C97; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .video-uploader { font-size: 0.98rem; color: #40C9FF; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; margin-bottom: 1em; }
+    .user-card img { width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #40C9FF; }
+    .user-info { flex:1; }
+    .user-info .username { font-weight:800; color:#005C97; font-size:1.09em; }
+    .user-info .bio { font-size:0.97em; color:#888; margin-top:0.3em; }
+    .theme-badge { display:inline-block; padding:0.2em 1em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.98em; margin-left:1em;}
     @media (max-width: 700px) {
-      .videos-grid {
-        grid-template-columns: 1fr;
-      }
-      .main-content {
-        margin-top: 1rem;
-        padding: 1.2em 0.3em;
-      }
+      .videos-grid { grid-template-columns: 1fr; }
+      .main-content { margin-top: 1rem; padding: 1.2em 0.3em; }
       .topbar { padding: 1em 0.6em 1em 0.6em; }
       .search-bar { max-width: 100%; }
     }
@@ -263,18 +55,18 @@
   <div class="topbar">
     <div style="display:flex;align-items:center;">
       <img src="shared/branding/peaceout-logo-concept.svg" class="logo" />
-      <span class="welcome">Welcome, <span id="username">...</span></span>
+      <span class="welcome">Welcome, <span id="username">...</span><span class="theme-badge" id="themeBadge"></span></span>
     </div>
     <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
   <nav class="site-nav">
-    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
+    <a href="homepage.html" class="active"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
     <a href="upload.html">Upload</a>
     <a href="discover.html">Discover</a>
     <a href="about-us.html">About</a>
     <a href="faq.html">FAQ</a>
     <a href="contact.html">Contact</a>
-    <a href="edit-profile.html">Profile</a>
+    <a href="#" id="profileNav">Profile</a>
   </nav>
   <div class="main-content" id="mainContent">
     <div class="hero-banner">
@@ -290,12 +82,47 @@
     <div class="section-title">PeaceOut Community</div>
     <p>Discover new videos, join live streams, and connect with creators!</p>
     <div class="section-title" style="font-size:2.1rem;margin-top:1.5em;">Latest Uploads</div>
-    <div class="videos-grid" id="videosGrid">
-      <!-- Videos will be loaded here -->
-    </div>
+    <div class="videos-grid" id="videosGrid"></div>
   </div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
+
+    // Themes to CSS
+    const THEMES = {
+      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);} .theme-badge{background:#B8FFF9;color:#005C97;}`,
+      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+        .topbar, .site-nav, .main-content { background: #FFDEE9 !important; }
+        .theme-badge{background:#FF3CAC;color:#fff;}
+        .hero-title, .video-title { color: #FF3CAC !important; }
+        .welcome, .site-nav a { color:#FF3CAC !important; }`,
+      "classic": `body{background:#fff;}
+        .topbar, .site-nav, .main-content { background: #fafafa !important; }
+        .theme-badge{background:#e0e0e0;color:#333;}
+        .hero-title, .video-title { color: #222 !important; }
+        .welcome, .site-nav a { color:#222 !important; }`,
+      "night": `body{background:#1a2233;}
+        .topbar, .site-nav, .main-content { background: #222 !important; color:#B8FFF9; }
+        .hero-title, .video-title { color: #B8FFF9 !important; }
+        .welcome, .site-nav a { color:#B8FFF9 !important; }
+        .theme-badge{background:#222;color:#B8FFF9;}
+        .video-card{background:#2c3552;}
+        .video-date{color:#ccc;}`
+    };
+
+    let userTheme = "peaceful";
+    let username = "";
+    let displayName = "";
+    let profileNavSet = false;
+
+    function setTheme(theme) {
+      if (!theme) theme = "peaceful";
+      userTheme = theme;
+      let style = THEMES[theme] || THEMES["peaceful"];
+      document.getElementById('themeStyle').textContent = style;
+      // Set the theme badge
+      document.getElementById('themeBadge').textContent =
+        theme.charAt(0).toUpperCase() + theme.slice(1);
+    }
 
     function showLoading() {
       document.getElementById("videosGrid").innerHTML = "<div>Loading...</div>";
@@ -306,7 +133,14 @@
         const res = await fetch(API_BASE + 'me', { credentials: 'include' });
         const data = await res.json();
         if (res.ok && data && data.username) {
-          document.getElementById('username').textContent = data.username;
+          username = data.username;
+          displayName = data.displayName || data.username;
+          document.getElementById('username').textContent = displayName;
+          setTheme(data.theme);
+          if (!profileNavSet) {
+            document.getElementById('profileNav').href = `profile.html?u=${encodeURIComponent(username)}`;
+            profileNavSet = true;
+          }
           loadVideos();
         } else {
           window.location.href = 'auth.html';
@@ -330,8 +164,8 @@
         const res = await fetch(API_BASE + 'videos', { credentials: 'include' });
         const videos = await res.json();
         const videosHtml = videos.map(video => `
-          <div class="video-card">
-            <img class="video-thumb" src="${video.filename ? 'https://peaceout-backend.onrender.com/uploads/' + video.filename : 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+          <div class="video-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.username)}'">
+            <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
             <div class="video-info">
               <img class="uploader-avatar" src="${video.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.username}">
               <div class="video-meta">
@@ -360,7 +194,7 @@
         if (data.users && data.users.length > 0) {
           html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Users</div>`;
           html += data.users.map(user => `
-            <div class="user-card">
+            <div class="user-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(user.username)}'">
               <img src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${user.username}">
               <div class="user-info">
                 <div class="username">@${user.username}</div>
@@ -372,8 +206,8 @@
         if (data.videos && data.videos.length > 0) {
           html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Videos</div>`;
           html += data.videos.map(video => `
-            <div class="video-card" style="margin-bottom:1em;">
-              <img class="video-thumb" src="${video.filename ? 'https://peaceout-backend.onrender.com/uploads/' + video.filename : 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+            <div class="video-card" style="margin-bottom:1em;" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">
+              <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
               <div class="video-info">
                 <img class="uploader-avatar" src="${video.uploaderAvatar || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.uploaderUsername}">
                 <div class="video-meta">

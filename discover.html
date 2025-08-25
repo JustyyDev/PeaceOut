@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Discover</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
-  <style>
+  <style id="themeStyle">
     body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
     .topbar, .site-nav { background: #fff; }
     .topbar { display: flex; align-items: center; justify-content: space-between; padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px; box-shadow: 0 2px 12px #40C9FF22; }
@@ -21,11 +21,12 @@
     .tabs button { background: #B8FFF9; border:none; border-radius:18px; padding:0.5em 1.4em; font-weight:700; color:#005C97; margin-right:0.8em; cursor:pointer; }
     .tabs button.active { background: linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%); color:#fff; }
     .results { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap:1.6em; }
-    .user-card, .video-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; }
+    .user-card, .video-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; cursor:pointer; }
     .user-card img, .video-card .video-thumb { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #40C9FF; }
     .user-info { flex:1; }
     .user-info .username { font-weight:800; color:#005C97; font-size:1.09em; }
     .user-info .bio { font-size:0.97em; color:#888; margin-top:0.3em; }
+    .user-info .theme-badge { display:inline-block; padding:0.18em 0.95em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.95em; margin-left:0.5em;}
     .video-info { flex:1; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
     .video-uploader { font-size:0.96em; color:#40C9FF; }
@@ -65,7 +66,7 @@
     <a href="about-us.html">About</a>
     <a href="faq.html">FAQ</a>
     <a href="contact.html">Contact</a>
-    <a href="edit-profile.html">Profile</a>
+    <a href="#" id="profileNav">Profile</a>
   </nav>
   <div class="discover-container">
     <div class="search-bar">
@@ -84,6 +85,44 @@
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
     let searchType = 'all';
 
+    // Theme handling (load current user's theme)
+    const THEMES = {
+      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);} .user-info .theme-badge{background:#B8FFF9;color:#005C97;}`,
+      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+        .topbar, .site-nav, .discover-container { background: #FFDEE9 !important; }
+        .user-info .theme-badge{background:#FF3CAC;color:#fff;}
+        .welcome, .site-nav a { color:#FF3CAC !important; }`,
+      "classic": `body{background:#fff;}
+        .topbar, .site-nav, .discover-container { background: #fafafa !important; }
+        .user-info .theme-badge{background:#e0e0e0;color:#333;}
+        .welcome, .site-nav a { color:#222 !important; }`,
+      "night": `body{background:#1a2233;}
+        .topbar, .site-nav, .discover-container { background: #222 !important; color:#B8FFF9; }
+        .welcome, .site-nav a { color:#B8FFF9 !important; }
+        .user-info .theme-badge{background:#222;color:#B8FFF9;}`
+    };
+    function setTheme(theme) {
+      if (!theme) theme = "peaceful";
+      let style = THEMES[theme] || THEMES["peaceful"];
+      document.getElementById('themeStyle').textContent = style;
+    }
+    // Get current user and set nav/profile theme
+    async function getCurrentUserAndSetTheme() {
+      try {
+        const res = await fetch(API_BASE + 'me', { credentials: 'include' });
+        const data = await res.json();
+        if (res.ok && data && data.username) {
+          setTheme(data.theme);
+          document.getElementById('profileNav').href = `profile.html?u=${encodeURIComponent(data.username)}`;
+        } else {
+          document.getElementById('profileNav').href = 'edit-profile.html';
+        }
+      } catch {
+        document.getElementById('profileNav').href = 'edit-profile.html';
+      }
+    }
+    getCurrentUserAndSetTheme();
+
     document.querySelectorAll('.tabs button').forEach(btn => {
       btn.onclick = () => {
         document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
@@ -95,7 +134,7 @@
     document.getElementById('searchInput').addEventListener('input', () => { doSearch(); });
 
     function videoThumbUrl(video) {
-      return 'https://placehold.co/640x360?text=Video';
+      return video.filename || 'https://placehold.co/640x360?text=Video';
     }
     function userAvatarUrl(user) {
       return user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg';
@@ -111,10 +150,12 @@
         if (searchType === 'all' || searchType === 'users') {
           (data.users || []).forEach(user => {
             html += `
-              <div class="user-card">
+              <div class="user-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(user.username)}'">
                 <img src="${userAvatarUrl(user)}" alt="${user.username}">
                 <div class="user-info">
-                  <div class="username">@${user.username}</div>
+                  <div class="username">@${user.username}
+                    <span class="theme-badge">${user.theme ? user.theme.charAt(0).toUpperCase()+user.theme.slice(1) : "Peaceful"}</span>
+                  </div>
                   <div class="bio">${user.bio||''}</div>
                 </div>
               </div>
@@ -140,15 +181,21 @@
           });
         }
         document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
-        attachVideoClickHandlers();
+        attachResultHandlers();
       } catch {
         document.getElementById('results').innerHTML = '<div style="color:#FF3CAC;">Search failed. Try again later.</div>';
       }
     }
 
-    function attachVideoClickHandlers() {
+    function attachResultHandlers() {
+      // User cards already have onclick for navigation.
       document.querySelectorAll('.video-card').forEach(card => {
-        card.onclick = function() {
+        card.onclick = function(e) {
+          // Only open modal if not clicking username
+          if (e.target.classList.contains('video-uploader')) {
+            window.location.href = 'profile.html?u=' + e.target.textContent.replace('@','');
+            return;
+          }
           const video = JSON.parse(card.getAttribute('data-video').replace(/&apos;/g, "'"));
           openVideoModal(video);
         };
@@ -181,7 +228,7 @@
               <button id="muteBtn" title="Mute/Unmute">🔊</button>
             </div>
             <div class="video-title">${video.title}</div>
-            <div class="video-uploader">@${video.uploaderUsername}</div>
+            <div class="video-uploader" style="cursor:pointer;" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">@${video.uploaderUsername}</div>
             <div class="video-stats" id="modalStats">
               <button class="like-btn" id="likeBtn">👍</button>
               <span class="stat" id="likeCount">${video.likes||0}</span>
