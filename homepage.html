@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Home</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
-  <style id="themeStyle">
-    /* --- PeaceOut base styles (keep this for energy) --- */
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     html, body {
       min-height: 100vh;
       margin: 0;
@@ -31,6 +31,15 @@
       font-size: 1.4em;
       color: #005C97;
       font-weight: 800;
+    }
+    .theme-badge {
+      display: inline-block;
+      padding: 0.2em 1em;
+      border-radius: 15px;
+      background: #B8FFF9;
+      color: #005C97;
+      font-size: 0.98em;
+      margin-left: 1em;
     }
     .logout-btn {
       background:linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%);
@@ -155,6 +164,7 @@
       display: flex;
       flex-direction: column;
       transition: transform 0.13s, box-shadow 0.15s;
+      cursor: pointer;
     }
     .video-card:hover {
       transform: scale(1.03) translateY(-2px);
@@ -186,7 +196,6 @@
     .user-info { flex:1; }
     .user-info .username { font-weight:800; color:#005C97; font-size:1.09em; }
     .user-info .bio { font-size:0.97em; color:#888; margin-top:0.3em; }
-    .theme-badge { display:inline-block; padding:0.2em 1em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.98em; margin-left:1em;}
     @media (max-width: 700px) {
       .videos-grid { grid-template-columns: 1fr; }
       .main-content { margin-top: 1rem; padding: 1.2em 0.3em; }
@@ -194,6 +203,7 @@
       .search-bar { max-width: 100%; }
     }
   </style>
+  <style id="themeOverride"></style>
 </head>
 <body>
   <div class="topbar">
@@ -204,290 +214,182 @@
     <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
   <nav class="site-nav">
-    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
+    <a href="homepage.html" class="active"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
     <a href="upload.html">Upload</a>
-    <a href="discover.html" class="active">Discover</a>
+    <a href="discover.html">Discover</a>
     <a href="about-us.html">About</a>
     <a href="faq.html">FAQ</a>
     <a href="contact.html">Contact</a>
     <a href="#" id="profileNav">Profile</a>
   </nav>
-  <div class="discover-container">
+  <div class="main-content" id="mainContent">
+    <div class="hero-banner">
+      <div class="hero-title">PeaceOut — The peaceful, energetic home for streaming and on-demand video</div>
+      <div class="hero-sub">Relax, create, stream, and vibe together.</div>
+      <button class="go-live-btn" onclick="window.location.href='upload.html'">Go Live / Upload Video</button>
+    </div>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search videos, users, etc.">
+      <button id="searchBtn">Search</button>
     </div>
-    <div class="tabs">
-      <button class="active" data-type="all">All</button>
-      <button data-type="videos">Videos</button>
-      <button data-type="users">Users</button>
-    </div>
-    <div class="results" id="results"></div>
+    <div class="search-results" id="searchResults"></div>
+    <div class="section-title">PeaceOut Community</div>
+    <p>Discover new videos, join live streams, and connect with creators!</p>
+    <div class="section-title" style="font-size:2.1rem;margin-top:1.5em;">Latest Uploads</div>
+    <div class="videos-grid" id="videosGrid"></div>
   </div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
-    let searchType = 'all';
 
-    // Theme handling
-    const THEMES = {
-      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);} .theme-badge{background:#B8FFF9;color:#005C97;}`,
-      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
-        .topbar, .site-nav, .discover-container { background: #FFDEE9 !important; }
+    const THEME_OVERRIDES = {
+      "peaceful": "",
+      "energetic": `
+        body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+        .topbar, .site-nav, .main-content { background: #FFDEE9 !important; }
         .theme-badge{background:#FF3CAC;color:#fff;}
-        .welcome, .site-nav a { color:#FF3CAC !important; }`,
-      "classic": `body{background:#fff;}
-        .topbar, .site-nav, .discover-container { background: #fafafa !important; }
+        .hero-title, .video-title { color: #FF3CAC !important; }
+        .welcome, .site-nav a { color:#FF3CAC !important; }
+      `,
+      "classic": `
+        body{background:#fff;}
+        .topbar, .site-nav, .main-content { background: #fafafa !important; }
         .theme-badge{background:#e0e0e0;color:#333;}
-        .welcome, .site-nav a { color:#222 !important; }`,
-      "night": `body{background:#1a2233;}
-        .topbar, .site-nav, .discover-container { background: #222 !important; color:#B8FFF9; }
+        .hero-title, .video-title { color: #222 !important; }
+        .welcome, .site-nav a { color:#222 !important; }
+      `,
+      "night": `
+        body{background:#1a2233;}
+        .topbar, .site-nav, .main-content { background: #222 !important; color:#B8FFF9; }
+        .hero-title, .video-title { color: #B8FFF9 !important; }
         .welcome, .site-nav a { color:#B8FFF9 !important; }
-        .theme-badge{background:#222;color:#B8FFF9;}`
+        .theme-badge{background:#222;color:#B8FFF9;}
+        .video-card{background:#2c3552;}
+      `
     };
+
+    let userTheme = "peaceful";
+    let username = "";
+    let displayName = "";
+    let profileNavSet = false;
+
     function setTheme(theme) {
       if (!theme) theme = "peaceful";
-      let style = THEMES[theme] || THEMES["peaceful"];
-      document.getElementById('themeStyle').textContent = style;
+      userTheme = theme;
+      document.getElementById('themeOverride').textContent = THEME_OVERRIDES[theme] || "";
       document.getElementById('themeBadge').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
     }
-    // Get current user and set nav/profile theme
-    async function getCurrentUserAndSetTheme() {
+
+    function showLoading() {
+      document.getElementById("videosGrid").innerHTML = "<div>Loading...</div>";
+    }
+
+    async function checkSession() {
       try {
         const res = await fetch(API_BASE + 'me', { credentials: 'include' });
         const data = await res.json();
         if (res.ok && data && data.username) {
+          username = data.username;
+          displayName = data.displayName || data.username;
+          document.getElementById('username').textContent = displayName;
           setTheme(data.theme);
-          document.getElementById('profileNav').href = `profile.html?u=${encodeURIComponent(data.username)}`;
-          document.getElementById('username').textContent = data.displayName || data.username;
+          if (!profileNavSet) {
+            document.getElementById('profileNav').href = `profile.html?u=${encodeURIComponent(username)}`;
+            profileNavSet = true;
+          }
+          loadVideos();
         } else {
-          document.getElementById('profileNav').href = 'edit-profile.html';
+          window.location.href = 'auth.html';
         }
       } catch {
-        document.getElementById('profileNav').href = 'edit-profile.html';
+        window.location.href = 'auth.html';
       }
     }
-    getCurrentUserAndSetTheme();
 
-    document.querySelectorAll('.tabs button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        searchType = btn.getAttribute('data-type');
-        doSearch();
-      };
-    });
-    document.getElementById('searchInput').addEventListener('input', () => { doSearch(); });
-
-    function videoThumbUrl(video) {
-      return video.filename || 'https://placehold.co/640x360?text=Video';
+    async function logout() {
+      try {
+        await fetch(API_BASE + 'logout', { method: 'POST', credentials: 'include' });
+      } finally {
+        window.location.href = 'auth.html';
+      }
     }
-    function userAvatarUrl(user) {
-      return user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg';
+
+    async function loadVideos() {
+      showLoading();
+      try {
+        const res = await fetch(API_BASE + 'videos', { credentials: 'include' });
+        const videos = await res.json();
+        const videosHtml = videos.map(video => `
+          <div class="video-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.username)}'">
+            <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+            <div class="video-info">
+              <img class="uploader-avatar" src="${video.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.username}">
+              <div class="video-meta">
+                <div class="video-title">${video.title}</div>
+                <div class="video-uploader">@${video.username}</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+        document.getElementById("videosGrid").innerHTML = videosHtml || "<div>No videos yet.</div>";
+      } catch (e) {
+        document.getElementById("videosGrid").innerHTML = "<div style='color:#FF3CAC;'>Failed to load videos.</div>";
+      }
     }
 
     async function doSearch() {
       const q = document.getElementById('searchInput').value.trim();
-      if (!q) { document.getElementById('results').innerHTML = ''; return; }
+      if (!q) {
+        document.getElementById('searchResults').innerHTML = '';
+        return;
+      }
       try {
-        const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=${searchType}`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=all`, { credentials: 'include' });
         const data = await res.json();
         let html = '';
-        if (searchType === 'all' || searchType === 'users') {
-          (data.users || []).forEach(user => {
-            html += `
-              <div class="user-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(user.username)}'">
-                <img src="${userAvatarUrl(user)}" alt="${user.username}">
-                <div class="user-info">
-                  <div class="username">${user.displayName || user.username}
-                    <span class="theme-badge">${user.theme ? user.theme.charAt(0).toUpperCase()+user.theme.slice(1) : "Peaceful"}</span>
-                  </div>
-                  <div class="bio">${user.bio||''}</div>
-                </div>
+        if (data.users && data.users.length > 0) {
+          html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Users</div>`;
+          html += data.users.map(user => `
+            <div class="user-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(user.username)}'">
+              <img src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" alt="${user.username}">
+              <div class="user-info">
+                <div class="username">${user.displayName || user.username}</div>
+                <div class="bio">${user.bio||''}</div>
               </div>
-            `;
-          });
+            </div>
+          `).join('');
         }
-        if (searchType === 'all' || searchType === 'videos') {
-          (data.videos || []).forEach(video => {
-            html += `
-              <div class="video-card" data-video='${JSON.stringify(video).replace(/'/g,"&apos;")}'>
-                <img class="video-thumb" src="${videoThumbUrl(video)}" alt="${video.title}">
-                <div class="video-info">
+        if (data.videos && data.videos.length > 0) {
+          html += `<div style="margin-bottom:0.5em;font-size:1.12em;font-weight:700;color:#005C97;">Videos</div>`;
+          html += data.videos.map(video => `
+            <div class="video-card" style="margin-bottom:1em;" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">
+              <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Thumbnail'}" alt="${video.title}">
+              <div class="video-info">
+                <img class="uploader-avatar" src="${video.uploaderAvatar || 'shared/branding/peaceout-logo-concept.svg'}" alt="${video.uploaderUsername}">
+                <div class="video-meta">
                   <div class="video-title">${video.title}</div>
-                  <div class="video-uploader" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'; event.stopPropagation();">@${video.uploaderUsername}</div>
-                  <div class="video-stats">
-                    <span class="stat">👍 ${video.likes||0}</span>
-                    <span class="stat">👎 ${video.dislikes||0}</span>
-                    <span class="stat">👁️ ${video.views||0}</span>
-                  </div>
+                  <div class="video-uploader">@${video.uploaderUsername}</div>
                 </div>
               </div>
-            `;
-          });
+            </div>
+          `).join('');
         }
-        document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
-        attachVideoClickHandlers();
+        if (!html) {
+          html = `<div style="color:#888;">No results found.</div>`;
+        }
+        document.getElementById('searchResults').innerHTML = html;
       } catch {
-        document.getElementById('results').innerHTML = '<div style="color:#FF3CAC;">Search failed. Try again later.</div>';
+        document.getElementById('searchResults').innerHTML = `<div style="color:#FF3CAC;">Search failed. Try again later.</div>`;
       }
     }
 
-    function attachVideoClickHandlers() {
-      document.querySelectorAll('.video-card').forEach(card => {
-        card.onclick = function(e) {
-          // Don't trigger modal on uploader click
-          if (e.target.classList.contains('video-uploader')) return;
-          const video = JSON.parse(card.getAttribute('data-video').replace(/&apos;/g, "'"));
-          openVideoModal(video);
-        };
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('logoutBtn').onclick = logout;
+      document.getElementById('searchBtn').onclick = doSearch;
+      document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doSearch();
       });
-    }
-
-    function formatTime(t) {
-      if (isNaN(t)) return "00:00";
-      const m = Math.floor(t/60), s = Math.floor(t%60);
-      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }
-
-    async function openVideoModal(video) {
-      const modal = document.getElementById('videoModal');
-      modal.innerHTML = `
-        <div class="modal-bg" onclick="if(event.target===this)closeVideoModal()">
-          <div class="modal-content">
-            <button class="modal-close" onclick="closeVideoModal()">&times;</button>
-            <div class="custom-video-wrapper" id="customVideoWrap">
-              <video id="customVideo" class="custom-video" src="${video.filename}" tabindex="0" controls></video>
-              <div id="videoErrorUI" class="video-error-ui" style="display:none;">
-                <div class="icon">📄</div>
-                <div>No video with supported format and MIME type found.</div>
-              </div>
-            </div>
-            <div class="custom-controls" id="customControls" style="display:none;">
-              <button id="playPauseBtn" title="Play/Pause">▶️</button>
-              <input id="seekBar" type="range" min="0" value="0" step="0.01">
-              <span class="custom-time" id="currentTime">00:00</span>/<span class="custom-time" id="duration">00:00</span>
-              <button id="muteBtn" title="Mute/Unmute">🔊</button>
-            </div>
-            <div class="video-title">${video.title}</div>
-            <div class="video-uploader" style="cursor:pointer;" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">@${video.uploaderUsername}</div>
-            <div class="video-stats" id="modalStats">
-              <button class="like-btn" id="likeBtn">👍</button>
-              <span class="stat" id="likeCount">${video.likes||0}</span>
-              <button class="dislike-btn" id="dislikeBtn">👎</button>
-              <span class="stat" id="dislikeCount">${video.dislikes||0}</span>
-              <span class="stat"><span id="viewCount">${video.views||0}</span> 👁️</span>
-            </div>
-          </div>
-        </div>
-      `;
-      modal.style.display = 'block';
-      setupCustomVideoUI(video);
-    }
-
-    async function setupCustomVideoUI(video) {
-      const v = document.getElementById('customVideo');
-      const controls = document.getElementById('customControls');
-      const playPauseBtn = document.getElementById('playPauseBtn');
-      const seekBar = document.getElementById('seekBar');
-      const currentTimeSpan = document.getElementById('currentTime');
-      const durationSpan = document.getElementById('duration');
-      const muteBtn = document.getElementById('muteBtn');
-      const errorUI = document.getElementById('videoErrorUI');
-      let hasCountedView = false;
-
-      v.onerror = function() {
-        controls.style.display = 'none';
-        errorUI.style.display = 'flex';
-      };
-      v.onloadedmetadata = function() {
-        controls.style.display = '';
-        errorUI.style.display = 'none';
-        seekBar.max = v.duration || 1;
-        durationSpan.textContent = formatTime(v.duration);
-      };
-      v.onplay = () => { playPauseBtn.textContent = "⏸️"; };
-      v.onpause = () => { playPauseBtn.textContent = "▶️"; };
-      v.ontimeupdate = () => {
-        seekBar.value = v.currentTime;
-        currentTimeSpan.textContent = formatTime(v.currentTime);
-        // increment view after 3 seconds of watch time, only once per open
-        if (!hasCountedView && v.currentTime >= 3) {
-          hasCountedView = true;
-          fetch(`${API_BASE}videos/${video.id}/view`, { method: 'POST', credentials: 'include' })
-            .then(()=>{ document.getElementById('viewCount').textContent = (parseInt(document.getElementById('viewCount').textContent)+1); });
-        }
-      };
-      seekBar.oninput = () => {
-        v.currentTime = seekBar.value;
-        currentTimeSpan.textContent = formatTime(v.currentTime);
-      };
-      playPauseBtn.onclick = () => { if (v.paused) v.play(); else v.pause(); };
-      muteBtn.onclick = () => {
-        v.muted = !v.muted;
-        muteBtn.textContent = v.muted ? "🔇" : "🔊";
-      };
-      v.onkeydown = e => { if (e.code === "Space") { e.preventDefault(); playPauseBtn.click(); } };
-      setTimeout(() => { if (v.readyState === 0) { controls.style.display = 'none'; errorUI.style.display = 'flex'; } }, 500);
-      setTimeout(() => { if (v.paused) v.play().catch(()=>{}); }, 200);
-
-      // Like/Dislike logic
-      const likeBtn = document.getElementById('likeBtn');
-      const dislikeBtn = document.getElementById('dislikeBtn');
-      const likeCount = document.getElementById('likeCount');
-      const dislikeCount = document.getElementById('dislikeCount');
-
-      // Set current reaction for this user
-      let liked = false, disliked = false;
-      try {
-        const reactionRes = await fetch(`${API_BASE}videos/${video.id}/reaction`, { credentials: 'include' });
-        const reaction = await reactionRes.json();
-        liked = !!reaction.liked;
-        disliked = !!reaction.disliked;
-        if (liked) likeBtn.classList.add('liked'); else likeBtn.classList.remove('liked');
-        if (disliked) dislikeBtn.classList.add('disliked'); else dislikeBtn.classList.remove('disliked');
-      } catch {}
-
-      likeBtn.onclick = async () => {
-        const res = await fetch(`${API_BASE}videos/${video.id}/like`, { method: 'POST', credentials: 'include' });
-        const result = await res.json();
-        liked = result.liked;
-        disliked = result.disliked;
-        if (liked) {
-          likeBtn.classList.add('liked');
-          if (parseInt(likeCount.textContent) === 0) likeCount.textContent = 1;
-          else likeCount.textContent = parseInt(likeCount.textContent) + 1;
-          if (disliked) {
-            dislikeBtn.classList.remove('disliked');
-            if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-          }
-        } else {
-          likeBtn.classList.remove('liked');
-          if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
-        }
-      };
-      dislikeBtn.onclick = async () => {
-        const res = await fetch(`${API_BASE}videos/${video.id}/dislike`, { method: 'POST', credentials: 'include' });
-        const result = await res.json();
-        liked = result.liked;
-        disliked = result.disliked;
-        if (disliked) {
-          dislikeBtn.classList.add('disliked');
-          if (parseInt(dislikeCount.textContent) === 0) dislikeCount.textContent = 1;
-          else dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-          if (liked) {
-            likeBtn.classList.remove('liked');
-            if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
-          }
-        } else {
-          dislikeBtn.classList.remove('disliked');
-          if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-        }
-      };
-    }
-    function closeVideoModal() {
-      document.getElementById('videoModal').style.display = 'none';
-      document.getElementById('videoModal').innerHTML = '';
-    }
-    window.closeVideoModal = closeVideoModal;
+      checkSession();
+    });
   </script>
 </body>
 </html>

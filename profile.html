@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Profile</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
-  <style id="themeStyle">
-    /* Default theme, will be replaced dynamically */
-    body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); }
-    .profile-header { background: #fff; border-radius: 18px; box-shadow:0 2px 12px #40C9FF22; margin:2em auto 1em auto; padding:2em 2em 1.2em 2em; max-width:700px; display:flex; gap:2em; align-items:center; }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body { min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);}
+    .site-nav { display: flex; align-items: center; gap: 1.2rem; background: #fff; padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11; margin-bottom: 1.2rem; border-radius: 0 0 16px 16px;}
+    .site-nav a { color: #005C97; font-weight: 700; text-decoration: none; padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s;}
+    .site-nav a.active, .site-nav a:hover { background: #B8FFF9; color: #FF3CAC;}
+    .profile-header { background: #fff; border-radius: 18px; box-shadow:0 2px 12px #40C9FF22; margin:2em auto 1em auto; padding:2em; max-width:700px; display:flex; gap:2em; align-items:center; }
     .avatar { width:100px; height:100px; border-radius:50%; border:3px solid #40C9FF; object-fit:cover; }
     .profile-meta { flex:1; }
     .display-name { font-size:2em; font-weight:900; color:#005C97; }
@@ -19,7 +22,7 @@
     .theme-badge { display:inline-block; padding:0.25em 1em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.98em; margin-left:1em;}
     .edit-btn { color:#40C9FF; margin-left:1em; text-decoration:underline; font-size:0.96em; cursor:pointer;}
     .videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2em; margin:2em auto; max-width:900px;}
-    .video-card { background:#fff; border-radius:16px; box-shadow:0 4px 16px #40C9FF22; overflow:hidden; display:flex; flex-direction:column; }
+    .video-card { background:#fff; border-radius:16px; box-shadow:0 4px 16px #40C9FF22; overflow:hidden; display:flex; flex-direction:column; cursor:pointer;}
     .video-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; background:#B8FFF9; }
     .video-info { padding:1em; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.2em;}
@@ -30,9 +33,10 @@
       .display-name {font-size:1.4em;}
     }
   </style>
+  <style id="themeOverride"></style>
 </head>
 <body>
-  <nav class="site-nav" style="background:#fff;padding:0.7rem 2rem 0.3rem 2rem;">
+  <nav class="site-nav">
     <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" style="width:30px;vertical-align:middle;margin-right:0.5rem;" />Home</a>
     <a href="upload.html">Upload</a>
     <a href="discover.html">Discover</a>
@@ -41,9 +45,7 @@
     <a href="contact.html">Contact</a>
     <a href="#" id="editProfileBtn" style="display:none;">Edit Profile</a>
   </nav>
-  <div class="profile-header" id="profileHeader">
-    <!-- Populated by JS -->
-  </div>
+  <div class="profile-header" id="profileHeader"></div>
   <div class="videos-grid" id="videosGrid"></div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
@@ -54,24 +56,30 @@
     let isFollowing = false;
     let profileId = null;
 
-    const THEMES = {
-      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);}`,
-      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
-        .profile-header{background:#FFDEE9;}
+    const THEME_OVERRIDES = {
+      "peaceful": "",
+      "energetic": `
+        body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+        .profile-header, .videos-grid, .video-card { background: #FFDEE9 !important; }
+        .theme-badge{background:#FF3CAC;color:#fff;}
         .display-name{color:#FF3CAC;}
-        .theme-badge{background:#FF3CAC;color:#fff;}`,
-      "classic": `body{background:#fff;}
-        .profile-header{background:#FAFAFA;}
+      `,
+      "classic": `
+        body{background:#fff;}
+        .profile-header, .videos-grid, .video-card { background: #fafafa !important; }
+        .theme-badge{background:#e0e0e0;color:#333;}
         .display-name{color:#222;}
-        .theme-badge{background:#e0e0e0;color:#333;}`,
-      "night": `body{background:#1a2233;}
-        .profile-header{background:#222;color:#fff;}
+      `,
+      "night": `
+        body{background:#1a2233;}
+        .profile-header, .videos-grid, .video-card { background: #222 !important; color:#B8FFF9; }
         .display-name{color:#B8FFF9;}
         .bio,.username,.stats{color:#B8FFF9;}
         .theme-badge{background:#222;color:#B8FFF9;}
         .video-card{background:#2c3552;}
         .video-title{color:#B8FFF9;}
-        .video-date{color:#ccc;}`
+        .video-date{color:#ccc;}
+      `
     };
 
     async function fetchProfile() {
@@ -89,9 +97,7 @@
       let me = null;
       if (meRes.ok) me = await meRes.json();
       isOwnProfile = me && me.username === user.username;
-      // Set theme
       setTheme(user.theme);
-      // Render
       document.getElementById('profileHeader').innerHTML = `
         <img class="avatar" src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" />
         <div class="profile-meta">
@@ -109,12 +115,10 @@
       if (isOwnProfile) {
         document.getElementById('editProfileBtn').href = 'edit-profile.html';
         document.getElementById('editProfileBtn').style.display = '';
-        // Show edit link inline as well
       } else {
         document.getElementById('editProfileBtn').style.display = 'none';
         updateFollowBtn();
       }
-      // Show videos
       document.getElementById('videosGrid').innerHTML = (user.videos || []).map(video => `
         <div class="video-card">
           <img class="video-thumb" src="${video.filename || 'https://placehold.co/640x360?text=No+Video'}" alt="${video.title}">
@@ -126,8 +130,8 @@
       `).join('');
     }
     function setTheme(theme) {
-      let style = THEMES[theme] || THEMES["peaceful"];
-      document.getElementById('themeStyle').textContent = style;
+      let style = THEME_OVERRIDES[theme] || THEME_OVERRIDES["peaceful"];
+      document.getElementById('themeOverride').textContent = style;
     }
     async function updateFollowBtn() {
       const btn = document.getElementById('followBtn');

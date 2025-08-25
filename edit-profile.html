@@ -6,6 +6,7 @@
   <title>Edit Profile — PeaceOut</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
     .container { max-width: 400px; margin: 3em auto; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px #40C9FF22; padding: 2em; }
     h1 { color: #005C97; text-align: center; }
@@ -38,9 +39,7 @@
       <textarea id="bio" maxlength="256" rows="3" placeholder="Write a short bio..."></textarea>
       <label for="theme">Profile Theme</label>
       <div class="theme-preview" id="themePreview"></div>
-      <select id="theme" style="margin-top:0.6em;">
-        <!-- Populated by JS -->
-      </select>
+      <select id="theme" style="margin-top:0.6em;"></select>
       <button type="submit">Update Profile</button>
       <div class="error" id="errorMsg"></div>
       <div class="success" id="successMsg"></div>
@@ -61,16 +60,12 @@
         document.getElementById('avatarUrl').value = user.avatarUrl || '';
         document.getElementById('displayName').value = user.displayName || '';
         document.getElementById('theme').value = user.theme || '';
-        setTimeout(()=>{ // In case select not loaded yet
-          document.getElementById('theme').value = user.theme || '';
-          highlightTheme(user.theme || '');
-        }, 300);
+        setTimeout(()=>{ document.getElementById('theme').value = user.theme || ''; highlightTheme(user.theme || ''); }, 300);
       } catch (e) {
         document.getElementById('errorMsg').textContent = "You must be logged in.";
       }
     }
 
-    // Load theme choices and preview
     async function fetchThemes() {
       const res = await fetch(`${API_BASE}profile-themes`);
       themes = await res.json();
@@ -96,7 +91,6 @@
     fetchThemes();
     fetchUser();
 
-    // Avatar preview
     document.getElementById('avatarFile').addEventListener('change', function() {
       const file = this.files[0];
       if (!file) return;
@@ -113,7 +107,6 @@
       document.getElementById('errorMsg').textContent = "";
     });
 
-    // Upload avatar image to backend
     async function uploadAvatarImage(file) {
       const formData = new FormData();
       formData.append("avatar", file);
@@ -144,7 +137,6 @@
           return;
         }
       }
-      // Fallback to dicebear if nothing provided
       if (!avatarUrl) avatarUrl = user ? user.avatarUrl : "";
       fetch(`${API_BASE}me`, {
         method: "POST",

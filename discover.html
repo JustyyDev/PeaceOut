@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Discover</title>
   <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
-  <style id="themeStyle">
-    body { background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%); font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body { min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%); color: #222;}
     .topbar, .site-nav { background: #fff; }
     .topbar { display: flex; align-items: center; justify-content: space-between; padding: 1.5em 2em 1.2em 2em; border-radius: 0 0 18px 18px; box-shadow: 0 2px 12px #40C9FF22; }
     .logo { width: 48px; margin-right: 1.1em; }
     .welcome { font-size: 1.4em; color: #005C97; font-weight: 800; }
+    .theme-badge { display:inline-block; padding:0.2em 1em; border-radius:15px; background:#B8FFF9; color:#005C97; font-size:0.98em; margin-left:1em;}
     .site-nav { display: flex; align-items: center; gap: 1.2rem; background: #fff; padding: 0.7rem 2rem 0.3rem 2rem; box-shadow: 0 2px 12px #40C9FF11; margin-bottom: 1.2rem; border-radius: 0 0 16px 16px; }
     .site-nav a { color: #005C97; font-weight: 700; text-decoration: none; padding: 0.4rem 1.2rem; border-radius: 20px; transition: background 0.14s; }
     .site-nav a.active, .site-nav a:hover { background: #B8FFF9; color: #FF3CAC; }
@@ -21,7 +23,8 @@
     .tabs button { background: #B8FFF9; border:none; border-radius:18px; padding:0.5em 1.4em; font-weight:700; color:#005C97; margin-right:0.8em; cursor:pointer; }
     .tabs button.active { background: linear-gradient(90deg,#40C9FF 0%,#FF3CAC 100%); color:#fff; }
     .results { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap:1.6em; }
-    .user-card, .video-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; cursor:pointer; }
+    .user-card, .video-card { background:#f8f8f9; border-radius:14px; box-shadow:0 2px 10px #40C9FF18; padding:1.1em; display:flex; align-items:center; gap:1.2em; cursor:pointer; transition:transform 0.13s, box-shadow 0.15s; }
+    .user-card:hover, .video-card:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 10px 32px #FF3CAC33;}
     .user-card img, .video-card .video-thumb { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #40C9FF; }
     .user-info { flex:1; }
     .user-info .username { font-weight:800; color:#005C97; font-size:1.09em; }
@@ -30,37 +33,20 @@
     .video-info { flex:1; }
     .video-title { font-weight:700; color:#005C97; font-size:1.07em; margin-bottom:0.3em; }
     .video-uploader { font-size:0.96em; color:#40C9FF; }
-    /* Modal UI */
-    .modal-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal-content { background: #fff; border-radius: 22px; box-shadow: 0 8px 32px #40C9FF44; padding: 2em 2em 1.5em 2em; max-width: 700px; min-width:300px; width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; position: relative; }
-    .custom-video-wrapper { width: 100%; background: #222; border-radius: 20px; margin-bottom: 1.3em; position: relative; overflow: hidden; min-height: 320px; display:flex; align-items: center; justify-content:center; }
-    .custom-video { width: 100%; max-width: 600px; max-height: 340px; outline: none; border-radius: 20px; background: #222; }
-    .custom-controls { display: flex; align-items: center; justify-content: center; width: 100%; gap: 1em; margin-top: 0.7em; }
-    .custom-controls button, .custom-controls input[type="range"] { accent-color: #40C9FF; }
-    .custom-controls button { background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%); border: none; border-radius: 50%; width: 40px; height: 40px; color: #fff; font-size: 1.2em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.11s; }
-    .custom-controls button:hover { background: #FF3CAC; transform: scale(1.08);}
-    .custom-controls input[type="range"] { width: 100px; }
-    .custom-time { font-size: 0.98em; color: #005C97; min-width: 75px; text-align:center; }
-    .modal-close { position: absolute; top: 1em; right: 1em; background: #FF3CAC; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.3em; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .video-title { font-weight: 700; color: #005C97; font-size: 1.13em; margin-bottom: 0.1em; text-align:center;}
-    .video-uploader { font-size: 1.05em; color: #40C9FF; text-align:center;}
-    .video-stats { display: flex; gap: 1.5em; justify-content:center; margin: .7em 0 1em 0; }
-    .video-stats .stat { color: #333; font-weight: 600; display:inline-flex; align-items:center; gap: 0.3em;}
-    .video-stats .like-btn, .video-stats .dislike-btn { background: none; border: none; color: #40C9FF; font-size: 1.1em; cursor: pointer; }
-    .video-stats .like-btn.liked { color: #FF3CAC; }
-    .video-stats .dislike-btn.disliked { color: #B8FFF9; }
-    .video-error-ui { width: 100%; height: 320px; background: #444; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #eee; }
-    .video-error-ui .icon { font-size: 3.2em; margin-bottom: 0.3em; }
-    @media (max-width:600px) { .discover-container{padding:1em;} .results{grid-template-columns:1fr;} .custom-video-wrapper, .video-error-ui { min-height: 180px; } .modal-content { padding:1em;} }
+    @media (max-width:600px) { .discover-container{padding:1em;} .results{grid-template-columns:1fr;} }
   </style>
+  <style id="themeOverride"></style>
 </head>
 <body>
   <div class="topbar">
-    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" class="logo" /></a>
-    <span class="welcome">Discover</span>
+    <div style="display:flex;align-items:center;">
+      <img src="shared/branding/peaceout-logo-concept.svg" class="logo" />
+      <span class="welcome">Discover <span class="theme-badge" id="themeBadge"></span></span>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
   <nav class="site-nav">
-    <a href="homepage.html">Home</a>
+    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
     <a href="upload.html">Upload</a>
     <a href="discover.html" class="active">Discover</a>
     <a href="about-us.html">About</a>
@@ -79,34 +65,36 @@
     </div>
     <div class="results" id="results"></div>
   </div>
-  <!-- Modal for video playback -->
-  <div id="videoModal" style="display:none;"></div>
   <script>
     const API_BASE = "https://peaceout-backend.onrender.com/api/";
     let searchType = 'all';
 
-    // Theme handling (load current user's theme)
-    const THEMES = {
-      "peaceful": `body{background:linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);} .user-info .theme-badge{background:#B8FFF9;color:#005C97;}`,
-      "energetic": `body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
+    const THEME_OVERRIDES = {
+      "peaceful": "",
+      "energetic": `
+        body{background:linear-gradient(135deg,#FFDEE9 0%,#B8FFF9 100%);}
         .topbar, .site-nav, .discover-container { background: #FFDEE9 !important; }
         .user-info .theme-badge{background:#FF3CAC;color:#fff;}
-        .welcome, .site-nav a { color:#FF3CAC !important; }`,
-      "classic": `body{background:#fff;}
+        .welcome, .site-nav a { color:#FF3CAC !important; }
+      `,
+      "classic": `
+        body{background:#fff;}
         .topbar, .site-nav, .discover-container { background: #fafafa !important; }
         .user-info .theme-badge{background:#e0e0e0;color:#333;}
-        .welcome, .site-nav a { color:#222 !important; }`,
-      "night": `body{background:#1a2233;}
+        .welcome, .site-nav a { color:#222 !important; }
+      `,
+      "night": `
+        body{background:#1a2233;}
         .topbar, .site-nav, .discover-container { background: #222 !important; color:#B8FFF9; }
         .welcome, .site-nav a { color:#B8FFF9 !important; }
-        .user-info .theme-badge{background:#222;color:#B8FFF9;}`
+        .user-info .theme-badge{background:#222;color:#B8FFF9;}
+      `
     };
     function setTheme(theme) {
       if (!theme) theme = "peaceful";
-      let style = THEMES[theme] || THEMES["peaceful"];
-      document.getElementById('themeStyle').textContent = style;
+      document.getElementById('themeOverride').textContent = THEME_OVERRIDES[theme] || "";
+      document.getElementById('themeBadge').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
     }
-    // Get current user and set nav/profile theme
     async function getCurrentUserAndSetTheme() {
       try {
         const res = await fetch(API_BASE + 'me', { credentials: 'include' });
@@ -153,7 +141,7 @@
               <div class="user-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(user.username)}'">
                 <img src="${userAvatarUrl(user)}" alt="${user.username}">
                 <div class="user-info">
-                  <div class="username">@${user.username}
+                  <div class="username">${user.displayName || user.username}
                     <span class="theme-badge">${user.theme ? user.theme.charAt(0).toUpperCase()+user.theme.slice(1) : "Peaceful"}</span>
                   </div>
                   <div class="bio">${user.bio||''}</div>
@@ -165,7 +153,7 @@
         if (searchType === 'all' || searchType === 'videos') {
           (data.videos || []).forEach(video => {
             html += `
-              <div class="video-card" data-video='${JSON.stringify(video).replace(/'/g,"&apos;")}'>
+              <div class="video-card" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">
                 <img class="video-thumb" src="${videoThumbUrl(video)}" alt="${video.title}">
                 <div class="video-info">
                   <div class="video-title">${video.title}</div>
@@ -181,173 +169,17 @@
           });
         }
         document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
-        attachResultHandlers();
       } catch {
         document.getElementById('results').innerHTML = '<div style="color:#FF3CAC;">Search failed. Try again later.</div>';
       }
     }
-
-    function attachResultHandlers() {
-      // User cards already have onclick for navigation.
-      document.querySelectorAll('.video-card').forEach(card => {
-        card.onclick = function(e) {
-          // Only open modal if not clicking username
-          if (e.target.classList.contains('video-uploader')) {
-            window.location.href = 'profile.html?u=' + e.target.textContent.replace('@','');
-            return;
-          }
-          const video = JSON.parse(card.getAttribute('data-video').replace(/&apos;/g, "'"));
-          openVideoModal(video);
-        };
-      });
-    }
-
-    function formatTime(t) {
-      if (isNaN(t)) return "00:00";
-      const m = Math.floor(t/60), s = Math.floor(t%60);
-      return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }
-
-    async function openVideoModal(video) {
-      const modal = document.getElementById('videoModal');
-      modal.innerHTML = `
-        <div class="modal-bg" onclick="if(event.target===this)closeVideoModal()">
-          <div class="modal-content">
-            <button class="modal-close" onclick="closeVideoModal()">&times;</button>
-            <div class="custom-video-wrapper" id="customVideoWrap">
-              <video id="customVideo" class="custom-video" src="${video.filename}" tabindex="0" controls></video>
-              <div id="videoErrorUI" class="video-error-ui" style="display:none;">
-                <div class="icon">📄</div>
-                <div>No video with supported format and MIME type found.</div>
-              </div>
-            </div>
-            <div class="custom-controls" id="customControls" style="display:none;">
-              <button id="playPauseBtn" title="Play/Pause">▶️</button>
-              <input id="seekBar" type="range" min="0" value="0" step="0.01">
-              <span class="custom-time" id="currentTime">00:00</span>/<span class="custom-time" id="duration">00:00</span>
-              <button id="muteBtn" title="Mute/Unmute">🔊</button>
-            </div>
-            <div class="video-title">${video.title}</div>
-            <div class="video-uploader" style="cursor:pointer;" onclick="window.location.href='profile.html?u=${encodeURIComponent(video.uploaderUsername)}'">@${video.uploaderUsername}</div>
-            <div class="video-stats" id="modalStats">
-              <button class="like-btn" id="likeBtn">👍</button>
-              <span class="stat" id="likeCount">${video.likes||0}</span>
-              <button class="dislike-btn" id="dislikeBtn">👎</button>
-              <span class="stat" id="dislikeCount">${video.dislikes||0}</span>
-              <span class="stat"><span id="viewCount">${video.views||0}</span> 👁️</span>
-            </div>
-          </div>
-        </div>
-      `;
-      modal.style.display = 'block';
-      setupCustomVideoUI(video);
-    }
-
-    async function setupCustomVideoUI(video) {
-      const v = document.getElementById('customVideo');
-      const controls = document.getElementById('customControls');
-      const playPauseBtn = document.getElementById('playPauseBtn');
-      const seekBar = document.getElementById('seekBar');
-      const currentTimeSpan = document.getElementById('currentTime');
-      const durationSpan = document.getElementById('duration');
-      const muteBtn = document.getElementById('muteBtn');
-      const errorUI = document.getElementById('videoErrorUI');
-      let hasCountedView = false;
-
-      v.onerror = function() {
-        controls.style.display = 'none';
-        errorUI.style.display = 'flex';
-      };
-      v.onloadedmetadata = function() {
-        controls.style.display = '';
-        errorUI.style.display = 'none';
-        seekBar.max = v.duration || 1;
-        durationSpan.textContent = formatTime(v.duration);
-      };
-      v.onplay = () => { playPauseBtn.textContent = "⏸️"; };
-      v.onpause = () => { playPauseBtn.textContent = "▶️"; };
-      v.ontimeupdate = () => {
-        seekBar.value = v.currentTime;
-        currentTimeSpan.textContent = formatTime(v.currentTime);
-        // increment view after 3 seconds of watch time, only once per open
-        if (!hasCountedView && v.currentTime >= 3) {
-          hasCountedView = true;
-          fetch(`${API_BASE}videos/${video.id}/view`, { method: 'POST', credentials: 'include' })
-            .then(()=>{ document.getElementById('viewCount').textContent = (parseInt(document.getElementById('viewCount').textContent)+1); });
-        }
-      };
-      seekBar.oninput = () => {
-        v.currentTime = seekBar.value;
-        currentTimeSpan.textContent = formatTime(v.currentTime);
-      };
-      playPauseBtn.onclick = () => { if (v.paused) v.play(); else v.pause(); };
-      muteBtn.onclick = () => {
-        v.muted = !v.muted;
-        muteBtn.textContent = v.muted ? "🔇" : "🔊";
-      };
-      v.onkeydown = e => { if (e.code === "Space") { e.preventDefault(); playPauseBtn.click(); } };
-      setTimeout(() => { if (v.readyState === 0) { controls.style.display = 'none'; errorUI.style.display = 'flex'; } }, 500);
-      setTimeout(() => { if (v.paused) v.play().catch(()=>{}); }, 200);
-
-      // Like/Dislike logic
-      const likeBtn = document.getElementById('likeBtn');
-      const dislikeBtn = document.getElementById('dislikeBtn');
-      const likeCount = document.getElementById('likeCount');
-      const dislikeCount = document.getElementById('dislikeCount');
-
-      // Set current reaction for this user
-      let liked = false, disliked = false;
+    document.getElementById('logoutBtn').onclick = async function() {
       try {
-        const reactionRes = await fetch(`${API_BASE}videos/${video.id}/reaction`, { credentials: 'include' });
-        const reaction = await reactionRes.json();
-        liked = !!reaction.liked;
-        disliked = !!reaction.disliked;
-        if (liked) likeBtn.classList.add('liked'); else likeBtn.classList.remove('liked');
-        if (disliked) dislikeBtn.classList.add('disliked'); else dislikeBtn.classList.remove('disliked');
-      } catch {}
-
-      likeBtn.onclick = async () => {
-        const res = await fetch(`${API_BASE}videos/${video.id}/like`, { method: 'POST', credentials: 'include' });
-        const result = await res.json();
-        liked = result.liked;
-        disliked = result.disliked;
-        if (liked) {
-          likeBtn.classList.add('liked');
-          if (parseInt(likeCount.textContent) === 0) likeCount.textContent = 1;
-          else likeCount.textContent = parseInt(likeCount.textContent) + 1;
-          if (disliked) {
-            dislikeBtn.classList.remove('disliked');
-            if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-          }
-        } else {
-          likeBtn.classList.remove('liked');
-          if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
-        }
-      };
-      dislikeBtn.onclick = async () => {
-        const res = await fetch(`${API_BASE}videos/${video.id}/dislike`, { method: 'POST', credentials: 'include' });
-        const result = await res.json();
-        liked = result.liked;
-        disliked = result.disliked;
-        if (disliked) {
-          dislikeBtn.classList.add('disliked');
-          if (parseInt(dislikeCount.textContent) === 0) dislikeCount.textContent = 1;
-          else dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-          if (liked) {
-            likeBtn.classList.remove('liked');
-            if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
-          }
-        } else {
-          dislikeBtn.classList.remove('disliked');
-          if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-        }
-      };
+        await fetch(API_BASE + 'logout', { method: 'POST', credentials: 'include' });
+      } finally {
+        window.location.href = 'auth.html';
+      }
     }
-    function closeVideoModal() {
-      document.getElementById('videoModal').style.display = 'none';
-      document.getElementById('videoModal').innerHTML = '';
-    }
-    window.closeVideoModal = closeVideoModal;
   </script>
 </body>
 </html>
