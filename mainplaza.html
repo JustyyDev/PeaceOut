@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut Plaza</title>
+  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
+      color: #222;
+    }
+    #plaza-canvas {
+      position: absolute;
+      left: 0; top: 0; width: 100vw; height: 100vh; display: block;
+      background: transparent;
+      z-index: 1;
+    }
+    .plaza-ui {
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .plaza-topbar {
+      pointer-events: all;
+      position: absolute;
+      top: 0; left: 0; width: 100vw;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 2px 10px #40C9FF22;
+      padding: 1em 2em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0 0 18px 18px;
+      z-index: 10;
+    }
+    .plaza-logo {
+      width: 42px; margin-right: 1em; vertical-align: middle;
+    }
+    .plaza-username {
+      font-weight: 800;
+      font-size: 1.15em;
+      color: #005C97;
+      margin-right: 1em;
+    }
+    .plaza-party-badge {
+      background: #B8FFF9;
+      color: #005C97;
+      border-radius: 14px;
+      padding: 0.2em 1em;
+      font-size: 0.95em;
+      margin-left: 1em;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .plaza-btn {
+      background: linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%);
+      border: none;
+      border-radius: 16px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1em;
+      padding: 0.6em 1.3em;
+      cursor: pointer;
+      margin-left: 0.8em;
+      transition: box-shadow 0.15s;
+      box-shadow: 0 2px 12px #40C9FF22;
+    }
+    .plaza-btn:hover { box-shadow: 0 6px 24px #FF3CAC33; }
+    .plaza-sidebar {
+      pointer-events: all;
+      position: absolute; right: 0; top: 70px; width: 270px; bottom: 0;
+      background: rgba(255,255,255,0.97);
+      border-radius: 16px 0 0 16px;
+      box-shadow: -2px 0 22px #40C9FF18;
+      padding: 1.3em 1em 1em 1em;
+      display: flex; flex-direction: column; gap: 1.1em;
+    }
+    .plaza-friends-list, .plaza-party-list {
+      margin: 0; padding: 0; list-style: none;
+      max-height: 180px; overflow-y: auto;
+    }
+    .plaza-friend-entry, .plaza-party-entry {
+      display: flex; align-items: center; gap: 0.7em;
+      margin-bottom: 0.5em;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 0.2em 0.6em;
+      transition: background 0.14s;
+    }
+    .plaza-friend-entry:hover, .plaza-party-entry:hover { background: #B8FFF9; }
+    .plaza-avatar {
+      width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+      border: 2px solid #40C9FF;
+    }
+    .plaza-marketstand-popup {
+      pointer-events: all;
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      background: #fff; border-radius: 18px; box-shadow: 0 8px 32px #FF3CAC22;
+      padding: 2em 2.5em; min-width: 320px; z-index: 100;
+      display: none;
+    }
+    .plaza-marketstand-popup h2 { margin-top: 0; font-size: 1.4em; color: #005C97; }
+    .minigame-btn {
+      margin-top: 0.7em; display: block; width: 100%;
+      background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 0.7em 1em; font-weight: 700; font-size: 1.1em;
+      margin-bottom: 0.7em; cursor: pointer;
+    }
+    .minigame-btn:hover { background: #FF3CAC; }
+    @media (max-width:700px) {
+      .plaza-sidebar { width: 94vw; left: 3vw; right: 3vw; min-width: 0; }
+      .plaza-topbar { flex-direction: column; gap: 0.7em; padding: 0.6em 0.7em;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Three.js/Canvas Plaza -->
+  <canvas id="plaza-canvas"></canvas>
+  <div class="plaza-ui">
+    <div class="plaza-topbar">
+      <span>
+        <img src="shared/branding/peaceout-logo-concept.svg" class="plaza-logo" />
+        <span class="plaza-username" id="plazaUsername">...</span>
+        <span class="plaza-party-badge" id="partyBadge" style="display:none;"></span>
+      </span>
+      <span>
+        <button class="plaza-btn" id="btnFriends">Friends</button>
+        <button class="plaza-btn" id="btnParty">Party</button>
+        <button class="plaza-btn" id="btnHome" onclick="window.location.href='homepage.html'">Home</button>
+      </span>
+    </div>
+    <div class="plaza-sidebar" id="plazaSidebar" style="display: none;">
+      <div id="sidebarFriends" style="display:none;">
+        <h3>Friends</h3>
+        <ul class="plaza-friends-list" id="friendsList"></ul>
+      </div>
+      <div id="sidebarParty" style="display:none;">
+        <h3>Party</h3>
+        <div id="partyHostInfo"></div>
+        <ul class="plaza-party-list" id="partyList"></ul>
+        <button class="plaza-btn" id="btnLeaveParty" style="margin-top:0.7em;">Leave Party</button>
+        <div id="partyInviteArea"></div>
+      </div>
+    </div>
+    <div class="plaza-marketstand-popup" id="marketstandPopup">
+      <h2>Party Minigames</h2>
+      <div id="minigameList"></div>
+      <button class="plaza-btn" onclick="closeMarketstandPopup()">Close</button>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    // === Plaza Config ===
+    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const SOCKET_URL = "https://peaceout-backend.onrender.com";
+    let user = null;
+    let userId = null;
+    let avatarColor = "#40C9FF";
+    let party = null;
+    let friends = [];
+    let marketstands = [{x:3,z:3},{x:-3,z:-3},{x:4,z:-4}]; // Example positions
+
+    // === UI Logic ===
+    const plazaSidebar = document.getElementById('plazaSidebar');
+    document.getElementById('btnFriends').onclick = () => {
+      plazaSidebar.style.display = plazaSidebar.style.display === "none" ? "" : "none";
+      document.getElementById('sidebarFriends').style.display = "";
+      document.getElementById('sidebarParty').style.display = "none";
+    };
+    document.getElementById('btnParty').onclick = () => {
+      plazaSidebar.style.display = plazaSidebar.style.display === "none" ? "" : "none";
+      document.getElementById('sidebarFriends').style.display = "none";
+      document.getElementById('sidebarParty').style.display = "";
+      updatePartySidebar();
+    };
+
+    function showMarketstandPopup() {
+      document.getElementById('marketstandPopup').style.display = "";
+      loadMinigames();
+    }
+    function closeMarketstandPopup() {
+      document.getElementById('marketstandPopup').style.display = "none";
+    }
+
+    // === Fetch User ===
+    async function fetchMe() {
+      const res = await fetch(API_BASE + "me", { credentials: 'include' });
+      if (!res.ok) { window.location.href = 'auth.html'; return; }
+      user = await res.json();
+      userId = user.id;
+      document.getElementById('plazaUsername').textContent = user.displayName || user.username;
+      avatarColor = getThemeColor(user.theme);
+      connectSocket();
+      fetchFriends();
+      fetchParty();
+    }
+    fetchMe();
+
+    function getThemeColor(theme) {
+      if (theme === "peaceful") return "#40C9FF";
+      if (theme === "energetic") return "#FF3CAC";
+      if (theme === "classic") return "#2C2C2C";
+      if (theme === "night") return "#B8FFF9";
+      return "#40C9FF";
+    }
+
+    // === Friends ===
+    async function fetchFriends() {
+      const res = await fetch(API_BASE + "friends", { credentials:'include' });
+      friends = await res.json();
+      const list = document.getElementById('friendsList');
+      list.innerHTML = "";
+      friends.forEach(f => {
+        const el = document.createElement('li');
+        el.className = 'plaza-friend-entry';
+        el.innerHTML = `<img class="plaza-avatar" src="${f.avatarUrl||'shared/branding/peaceout-logo-concept.svg'}"><span>${f.displayName||f.username}</span>`;
+        el.onclick = () => inviteToParty(f.id);
+        list.appendChild(el);
+      });
+    }
+
+    // === Party ===
+    async function fetchParty() {
+      const res = await fetch(API_BASE + "party/me", { credentials:'include' });
+      party = await res.json();
+      updatePartyBadge();
+      updatePartySidebar();
+    }
+    function updatePartyBadge() {
+      const badge = document.getElementById('partyBadge');
+      if (party && party.members) {
+        badge.style.display = "";
+        badge.textContent = party.host_id === userId ? "Host" : "Member";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+    function updatePartySidebar() {
+      if (!party || !party.members) {
+        document.getElementById('partyHostInfo').textContent = "You are not in a party.";
+        document.getElementById('partyList').innerHTML = "";
+        document.getElementById('btnLeaveParty').style.display = "none";
+        document.getElementById('partyInviteArea').innerHTML = `<button class="plaza-btn" onclick="createParty()">Create Party</button>`;
+        return;
+      }
+      document.getElementById('partyHostInfo').innerHTML = party.host_id === userId
+        ? "You are the <b>host</b>."
+        : `Host: <b>${(party.members.find(m=>m.id===party.host_id)||{}).displayName||"Unknown"}</b>`;
+      document.getElementById('partyList').innerHTML =
+        party.members.map(m =>
+          `<li class="plaza-party-entry">${m.displayName||m.username}${m.id===party.host_id?' <span style="color:#40C9FF;">(host)</span>':''}</li>`
+        ).join('');
+      document.getElementById('btnLeaveParty').style.display = "";
+      document.getElementById('partyInviteArea').innerHTML =
+        party.host_id === userId
+          ? `<div style="margin-top:1em;"><b>Invite friends:</b>
+                ${friends.map(f=>`<button class="plaza-btn" style="font-size:0.9em;padding:0.3em 1em;margin:0.2em;" onclick="inviteToParty(${f.id});event.stopPropagation();">${f.displayName||f.username}</button>`).join('')}
+            </div>
+            <button class="plaza-btn" style="margin-top:1em;" onclick="showMarketstandPopup()">Open Marketstand</button>`
+          : "";
+    }
+    async function inviteToParty(friendId) {
+      if (!party || party.host_id !== userId) { alert("Only host can invite!"); return; }
+      // In a real app, send invite via API & socket
+      await fetch(API_BASE + "party/invite", { method:"POST", credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId:friendId}) });
+      alert("Invited!");
+    }
+    async function createParty() {
+      await fetch(API_BASE + "party/create", { method:"POST", credentials:'include' });
+      fetchParty();
+    }
+    document.getElementById('btnLeaveParty').onclick = async () => {
+      await fetch(API_BASE + "party/leave", { method:"POST", credentials:'include' });
+      fetchParty();
+    };
+
+    // === Minigames ===
+    async function loadMinigames() {
+      const res = await fetch(API_BASE + "minigames");
+      const games = await res.json();
+      const list = document.getElementById('minigameList');
+      list.innerHTML = games.map(g=>`<button class="minigame-btn" onclick="startMinigame(${g.id})">${g.name}</button>`).join('');
+    }
+    async function startMinigame(minigameId) {
+      if (!party || party.host_id !== userId) { alert("Only host can start games!"); return; }
+      await fetch(API_BASE + "party/start-game", { method:"POST", credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({partyId:party.id, minigameId}) });
+      alert("Minigame started! (Demo)");
+      closeMarketstandPopup();
+    }
+
+    // === SOCKET.IO PLAZA LOGIC ===
+    let socket, myBlob, allBlobs = {};
+    function connectSocket() {
+      socket = io(SOCKET_URL, { auth: { userId } });
+      socket.emit('plaza:join', { avatarColor });
+      socket.on('plaza:state', blobs => {
+        allBlobs = blobs;
+        renderBlobs();
+      });
+      socket.on('plaza:user-joined', data => {
+        allBlobs[data.userId] = data;
+        renderBlobs();
+      });
+      socket.on('plaza:user-move', data => {
+        if (allBlobs[data.userId]) {
+          allBlobs[data.userId].x = data.x;
+          allBlobs[data.userId].y = data.y;
+          renderBlobs();
+        }
+      });
+      socket.on('plaza:user-left', userIdLeft => {
+        delete allBlobs[userIdLeft];
+        renderBlobs();
+      });
+    }
+
+    // === THREE.JS PLAZA ===
+    let scene, camera, renderer, controls, blobMesh;
+    let lastSent = 0;
+    function setupThree() {
+      const width = window.innerWidth, height = window.innerHeight;
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, width/height, 0.1, 100);
+      camera.position.set(0, 7, 15);
+      camera.lookAt(0,0,0);
+
+      renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('plaza-canvas'), alpha: true, antialias:true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0x000000, 0);
+
+      // Plaza "ground"
+      const groundGeo = new THREE.PlaneGeometry(30,30);
+      const groundMat = new THREE.MeshPhongMaterial({ color:0xB8FFF9, shininess: 15 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI/2;
+      scene.add(ground);
+
+      // Marketstands
+      marketstands.forEach((m, idx) => {
+        const standGeo = new THREE.CylinderGeometry(1,1,1.2,24);
+        const standMat = new THREE.MeshPhongMaterial({ color:0xFF3CAC });
+        const stand = new THREE.Mesh(standGeo, standMat);
+        stand.position.set(m.x,0.6,m.z);
+        stand.userData = { isMarketstand: true, id: idx };
+        scene.add(stand);
+      });
+
+      // Lights
+      const ambient = new THREE.AmbientLight(0xffffff, 0.95);
+      const dir = new THREE.DirectionalLight(0x40C9FF, 0.5);
+      dir.position.set(4,12,7);
+      scene.add(ambient, dir);
+
+      // My blob
+      blobMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.9, 32, 32),
+        new THREE.MeshPhongMaterial({ color: avatarColor })
+      );
+      blobMesh.position.set(0,0.9,0);
+      scene.add(blobMesh);
+
+      animate();
+      window.addEventListener('resize', onResize, false);
+      document.addEventListener('keydown', onKeyDown, false);
+      document.getElementById('plaza-canvas').addEventListener('click', onCanvasClick, false);
+    }
+    function onResize() {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    function onKeyDown(e) {
+      let dx=0, dz=0;
+      if (e.key === "ArrowUp" || e.key.toLowerCase() === "w") dz = -0.3;
+      if (e.key === "ArrowDown" || e.key.toLowerCase() === "s") dz = 0.3;
+      if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") dx = -0.3;
+      if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") dx = 0.3;
+      if (dx!==0 || dz!==0) {
+        blobMesh.position.x += dx;
+        blobMesh.position.z += dz;
+        // Clamp
+        blobMesh.position.x = Math.max(-14, Math.min(14, blobMesh.position.x));
+        blobMesh.position.z = Math.max(-14, Math.min(14, blobMesh.position.z));
+        sendMove(blobMesh.position.x, blobMesh.position.z);
+      }
+    }
+    function sendMove(x, y) {
+      if (socket && Date.now()-lastSent>30) {
+        socket.emit('plaza:move', { x, y });
+        lastSent = Date.now();
+      }
+    }
+    function onCanvasClick(ev) {
+      // Raycast for marketstands
+      const rect = renderer.domElement.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((ev.clientX - rect.left) / rect.width) * 2 - 1,
+        -((ev.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children, false);
+      for (const obj of intersects) {
+        if (obj.object.userData && obj.object.userData.isMarketstand) {
+          // Only party host can open marketstand
+          if (!party || party.host_id !== userId) { alert("Only party host can open marketstands!"); return; }
+          showMarketstandPopup();
+          return;
+        }
+      }
+    }
+    function animate() {
+      renderer.render(scene, camera);
+      // Render other blobs
+      renderOtherBlobs();
+      requestAnimationFrame(animate);
+    }
+    let otherBlobMeshes = {};
+    function renderOtherBlobs() {
+      // Remove missing blobs
+      Object.keys(otherBlobMeshes).forEach(uid => {
+        if (!allBlobs[uid] || uid == userId) {
+          scene.remove(otherBlobMeshes[uid]);
+          delete otherBlobMeshes[uid];
+        }
+      });
+      // Add/update blobs
+      Object.keys(allBlobs).forEach(uid => {
+        if (uid == userId) return;
+        let blob = allBlobs[uid];
+        if (!otherBlobMeshes[uid]) {
+          let mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.9, 32, 32),
+            new THREE.MeshPhongMaterial({ color: blob.color||0x40C9FF })
+          );
+          mesh.position.set(blob.x||0, 0.9, blob.y||0);
+          scene.add(mesh);
+          otherBlobMeshes[uid] = mesh;
+        } else {
+          otherBlobMeshes[uid].position.set(blob.x||0, 0.9, blob.y||0);
+        }
+      });
+    }
+    function renderBlobs() { /* called when state changes; handled in renderOtherBlobs above */ }
+    window.onload = setupThree;
+  </script>
+</body>
+</html>
