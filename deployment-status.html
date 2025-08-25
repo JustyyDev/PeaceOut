@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeaceOut Deployment Status</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #005C97;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #ddd;
+        }
+        .status-card.success {
+            border-left-color: #28a745;
+            background: #f8fff9;
+        }
+        .status-card.warning {
+            border-left-color: #ffc107;
+            background: #fffef8;
+        }
+        .status-card.error {
+            border-left-color: #dc3545;
+            background: #fff8f8;
+        }
+        .config-url {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        button {
+            background: linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 PeaceOut Deployment Status</h1>
+        
+        <div class="status-card" id="frontend-status">
+            <h3>Frontend Status</h3>
+            <p>Current URL: <span id="current-url"></span></p>
+            <div class="config-url" id="detected-config"></div>
+        </div>
+
+        <div class="status-card" id="backend-status">
+            <h3>Backend Status</h3>
+            <p>API Endpoint: <span id="api-endpoint"></span></p>
+            <button onclick="testBackend()">Test Backend Connection</button>
+            <div id="backend-result"></div>
+        </div>
+
+        <div class="status-card">
+            <h3>Deployment Options</h3>
+            <p>Available deployment configurations:</p>
+            <ul>
+                <li>✅ <strong>GitHub Pages</strong> - Frontend already configured</li>
+                <li>✅ <strong>Vercel</strong> - vercel.json ready</li>
+                <li>✅ <strong>Railway</strong> - railway.toml ready</li>
+                <li>✅ <strong>Heroku</strong> - Procfile ready</li>
+                <li>✅ <strong>Netlify</strong> - netlify.toml ready</li>
+                <li>✅ <strong>Docker</strong> - Dockerfile ready</li>
+            </ul>
+            <p>See <a href="https://github.com/JustyyDev/PeaceOut/blob/main/DEPLOYMENT.md" target="_blank">DEPLOYMENT.md</a> for detailed instructions.</p>
+        </div>
+
+        <div class="status-card">
+            <h3>Configuration</h3>
+            <p>To use a custom backend URL, edit <code>deployment-config.js</code>:</p>
+            <div class="config-url">
+                window.PEACEOUT_BACKEND_URL = 'https://your-backend.vercel.app/api/';
+            </div>
+        </div>
+    </div>
+
+    <script src="deployment-config.js"></script>
+    <script src="js/api-config.js"></script>
+    <script>
+        // Display current configuration
+        document.getElementById('current-url').textContent = window.location.origin;
+        document.getElementById('api-endpoint').textContent = ApiConfig.BASE_URL;
+        
+        const detectedConfig = document.getElementById('detected-config');
+        if (window.PEACEOUT_BACKEND_URL) {
+            detectedConfig.innerHTML = `<strong>Custom backend configured:</strong> ${window.PEACEOUT_BACKEND_URL}`;
+            document.getElementById('frontend-status').className = 'status-card success';
+        } else {
+            detectedConfig.innerHTML = '<strong>Auto-detected configuration</strong> - No custom backend URL set';
+            document.getElementById('frontend-status').className = 'status-card warning';
+        }
+
+        async function testBackend() {
+            const result = document.getElementById('backend-result');
+            result.innerHTML = '<p>Testing backend connection...</p>';
+            
+            try {
+                const response = await fetch(ApiConfig.BASE_URL.replace('/api/', '/api/me'), {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok || response.status === 401) {
+                    result.innerHTML = '<p style="color: green;">✅ Backend is reachable!</p>';
+                    document.getElementById('backend-status').className = 'status-card success';
+                } else {
+                    result.innerHTML = `<p style="color: orange;">⚠️ Backend responded with status: ${response.status}</p>`;
+                    document.getElementById('backend-status').className = 'status-card warning';
+                }
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">❌ Backend connection failed: ${error.message}</p>`;
+                document.getElementById('backend-status').className = 'status-card error';
+            }
+        }
+
+        // Auto-test backend on page load
+        window.addEventListener('load', () => {
+            setTimeout(testBackend, 1000);
+        });
+    </script>
+</body>
+</html>

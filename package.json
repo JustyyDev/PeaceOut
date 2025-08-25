@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-assets",
+    "copy-assets": "cp -r shared/* dist/ && cp deployment-config.js dist/",
     "preview": "vite preview",
     "start": "vite",
     "deploy": "gh-pages -d dist"
