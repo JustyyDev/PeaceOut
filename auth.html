@@ -94,13 +94,14 @@
     <img src="shared/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" class="logo" />
     <div id="authForms"></div>
   </div>
+  <script src="shared/js/api-config.js"></script>
   <script>
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const API_BASE = ApiConfig.BASE_URL;
 
     // Check session and redirect if already logged in
     async function checkSession() {
       try {
-        const res = await fetch(API_BASE + 'me', { credentials: 'include' });
+        const res = await ApiConfig.get('me');
         if (res.ok) {
           window.location.href = 'homepage.html';
         }
@@ -137,12 +138,7 @@
         const password = document.getElementById('loginPassword').value;
         if (!username || !password) return setMsg('Please enter username and password.');
         try {
-          const res = await fetch(API_BASE + 'login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            body: JSON.stringify({ username, password })
-          });
+          const res = await ApiConfig.post('login', { username, password });
           const data = await res.json();
           if (res.ok) {
             setMsg('Login successful! Redirecting...', true);
@@ -193,12 +189,7 @@
           return;
         }
         try {
-          const res = await fetch(API_BASE + 'register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            body: JSON.stringify({ username, password, passwordRepeat })
-          });
+          const res = await ApiConfig.post('register', { username, password, passwordRepeat });
           const data = await res.json();
           if (res.ok) {
             setMsg('Registration successful! Logging you in...', true);

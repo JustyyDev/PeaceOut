@@ -158,10 +158,11 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="shared/js/api-config.js"></script>
   <script>
     // === Plaza Config ===
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
-    const SOCKET_URL = "https://peaceout-backend.onrender.com";
+    const API_BASE = ApiConfig.BASE_URL;
+    const SOCKET_URL = ApiConfig.BASE_URL.replace('/api/', '').replace(/\/$/, '');
     let user = null;
     let userId = null;
     let avatarColor = "#40C9FF";
@@ -193,7 +194,7 @@
 
     // === Fetch User ===
     async function fetchMe() {
-      const res = await fetch(API_BASE + "me", { credentials: 'include' });
+      const res = await ApiConfig.get("me");
       if (!res.ok) { window.location.href = 'auth.html'; return; }
       user = await res.json();
       userId = user.id;
@@ -215,7 +216,7 @@
 
     // === Friends ===
     async function fetchFriends() {
-      const res = await fetch(API_BASE + "friends", { credentials:'include' });
+      const res = await ApiConfig.get("friends");
       friends = await res.json();
       const list = document.getElementById('friendsList');
       list.innerHTML = "";
@@ -230,7 +231,7 @@
 
     // === Party ===
     async function fetchParty() {
-      const res = await fetch(API_BASE + "party/me", { credentials:'include' });
+      const res = await ApiConfig.get("party/me");
       party = await res.json();
       updatePartyBadge();
       updatePartySidebar();
@@ -271,28 +272,28 @@
     async function inviteToParty(friendId) {
       if (!party || party.host_id !== userId) { alert("Only host can invite!"); return; }
       // In a real app, send invite via API & socket
-      await fetch(API_BASE + "party/invite", { method:"POST", credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({userId:friendId}) });
+      await ApiConfig.post("party/invite", {userId:friendId});
       alert("Invited!");
     }
     async function createParty() {
-      await fetch(API_BASE + "party/create", { method:"POST", credentials:'include' });
+      await ApiConfig.post("party/create");
       fetchParty();
     }
     document.getElementById('btnLeaveParty').onclick = async () => {
-      await fetch(API_BASE + "party/leave", { method:"POST", credentials:'include' });
+      await ApiConfig.post("party/leave");
       fetchParty();
     };
 
     // === Minigames ===
     async function loadMinigames() {
-      const res = await fetch(API_BASE + "minigames");
+      const res = await ApiConfig.get("minigames");
       const games = await res.json();
       const list = document.getElementById('minigameList');
       list.innerHTML = games.map(g=>`<button class="minigame-btn" onclick="startMinigame(${g.id})">${g.name}</button>`).join('');
     }
     async function startMinigame(minigameId) {
       if (!party || party.host_id !== userId) { alert("Only host can start games!"); return; }
-      await fetch(API_BASE + "party/start-game", { method:"POST", credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({partyId:party.id, minigameId}) });
+      await ApiConfig.post("party/start-game", {partyId:party.id, minigameId});
       alert("Minigame started! (Demo)");
       closeMarketstandPopup();
     }

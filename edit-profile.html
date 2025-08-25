@@ -45,14 +45,15 @@
       <div class="success" id="successMsg"></div>
     </form>
   </div>
+  <script src="shared/js/api-config.js"></script>
   <script>
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const API_BASE = ApiConfig.BASE_URL;
     let user = null;
     let themes = [];
 
     async function fetchUser() {
       try {
-        const res = await fetch(`${API_BASE}me`, { credentials: 'include' });
+        const res = await ApiConfig.get('me');
         if (!res.ok) throw new Error('Not logged in');
         user = await res.json();
         document.getElementById('bio').value = user.bio || '';
@@ -67,7 +68,7 @@
     }
 
     async function fetchThemes() {
-      const res = await fetch(`${API_BASE}profile-themes`);
+      const res = await ApiConfig.get('profile-themes');
       themes = await res.json();
       let html = '';
       let options = '';
@@ -110,7 +111,7 @@
     async function uploadAvatarImage(file) {
       const formData = new FormData();
       formData.append("avatar", file);
-      const res = await fetch(`${API_BASE}avatar/upload`, {
+      const res = await fetch(ApiConfig.endpoint('avatar/upload'), {
         method: "POST",
         credentials: "include",
         body: formData
@@ -138,19 +139,13 @@
         }
       }
       if (!avatarUrl) avatarUrl = user ? user.avatarUrl : "";
-      fetch(`${API_BASE}me`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarUrl, bio, displayName, theme })
-      }).then(async (res) => {
-        if (!res.ok) {
-          document.getElementById('errorMsg').textContent = "Failed to update profile.";
-        } else {
-          document.getElementById('successMsg').textContent = "Profile updated!";
-          setTimeout(()=>location.reload(), 1200);
-        }
-      });
+      const res = await ApiConfig.post('me', { avatarUrl, bio, displayName, theme });
+      if (!res.ok) {
+        document.getElementById('errorMsg').textContent = "Failed to update profile.";
+      } else {
+        document.getElementById('successMsg').textContent = "Profile updated!";
+        setTimeout(()=>location.reload(), 1200);
+      }
     };
   </script>
 </body>

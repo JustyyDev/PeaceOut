@@ -111,8 +111,9 @@
       <a href="homepage.html" style="color:#40C9FF;text-decoration:underline;">Back to Home</a>
     </div>
   </form>
+  <script src="shared/js/api-config.js"></script>
   <script>
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const API_BASE = ApiConfig.BASE_URL;
 
     // Video file preview
     document.getElementById('videoFile').addEventListener('change', function() {
@@ -152,7 +153,7 @@
       formData.append('title', title);
 
       try {
-        const res = await fetch(API_BASE + 'videos/upload', {
+        const res = await fetch(ApiConfig.endpoint('videos/upload'), {
           method: 'POST',
           credentials: 'include',
           body: formData
