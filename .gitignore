@@ -35,3 +35,4 @@ backend/peaceout.db
 
 # Local deployment configs (optional)
 deployment-config.local.js
+.vercel
