@@ -2,12 +2,22 @@
   "name": "peaceout",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "dev:web": "vite",
+    "build:web": "vite build",
+    "dev:api": "cd apps/api && npm run dev",
+    "start:api": "cd apps/api && npm start",
+    "dev:dashboard": "cd apps/dashboard && npm run dev",
+    "build:dashboard": "cd apps/dashboard && npm run build"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

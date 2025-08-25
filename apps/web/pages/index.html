@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>PeaceOut ✌️</title>
+  <meta name="description" content="PeaceOut – The peaceful, energetic home for streaming and on-demand video." />
+  <link rel="icon" type="image/svg+xml" href="../assets/branding/peaceout-logo-concept.svg" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      animation: fadein-bg 1.2s cubic-bezier(.8,0,.4,1);
+    }
+    @keyframes fadein-bg {
+      from { opacity: 0; filter: blur(8px);}
+      to { opacity: 1; filter: blur(0);}
+    }
+    .logo {
+      width: 160px;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0px 6px 24px #40C9FF88);
+      opacity: 0;
+      transform: scale(0.8);
+      animation: logo-pop 1.2s 0.1s cubic-bezier(.65,0,.45,1) forwards;
+    }
+    @keyframes logo-pop {
+      to { opacity: 1; transform: scale(1);}
+    }
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      color: #005C97;
+      opacity: 0;
+      transform: translateY(32px);
+      animation: h1-in 1.1s 0.25s cubic-bezier(.7,0,.3,1) forwards;
+    }
+    @keyframes h1-in {
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      color: #FF3CAC;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(32px);
+      animation: subtitle-in 1.1s 0.5s cubic-bezier(.7,0,.3,1) forwards;
+    }
+    @keyframes subtitle-in {
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .brand {
+      margin-top: 2.5rem;
+      font-size: 1rem;
+      color: #005C97BB;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0;
+      animation: brand-in 1s 1s cubic-bezier(.7,0,.3,1) forwards;
+    }
+    @keyframes brand-in {
+      to { opacity: 1; }
+    }
+    .peace-emoji {
+      font-size: 2.3rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      opacity: 0;
+      transform: scale(0.5) rotate(-15deg);
+      animation: peace-bounce 0.9s 0.7s cubic-bezier(.7,0,.2,1) forwards;
+    }
+    @keyframes peace-bounce {
+      0% { opacity: 0; transform: scale(0.5) rotate(-15deg);}
+      75% { opacity: 1; transform: scale(1.18) rotate(7deg);}
+      100% { opacity: 1; transform: scale(1) rotate(0);}
+    }
+    .enter-link {
+      background:linear-gradient(90deg, #40C9FF 0%, #FF3CAC 100%);
+      color:#fff;
+      text-decoration:none;
+      padding:0.85rem 2.2rem;
+      border-radius:40px;
+      font-weight:800;
+      font-size:1.15rem;
+      box-shadow:0 2px 12px #40C9FF33;
+      transition:transform 0.11s, box-shadow 0.15s;
+      display:inline-block;
+      margin-top:2.5rem;
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+      animation: btn-in 1s 1.3s cubic-bezier(.7,0,.2,1) forwards;
+    }
+    .enter-link:hover {
+      box-shadow:0 8px 32px #FF3CAC33;
+      transform: translateY(-2px) scale(1.03);
+      background:linear-gradient(90deg,#FF3CAC 0%,#40C9FF 100%);
+    }
+    @keyframes btn-in {
+      to { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .subtitle {
+        font-size: 1rem;
+      }
+      .logo {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="logo" src="../assets/branding/peaceout-logo-concept.svg" alt="PeaceOut Logo" />
+    <span class="peace-emoji">✌️</span>
+    <h1>Welcome to PeaceOut</h1>
+    <div class="subtitle">Relax, create, stream, and vibe together</div>
+    <div class="brand">
+      The peaceful, energetic home for streaming and on-demand video.
+    </div>
+    <a class="enter-link" href="homepage.html">Enter PeaceOut</a>
+  </div>
+</body>
+</html>

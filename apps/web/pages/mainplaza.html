@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut Plaza</title>
-  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <link rel="icon" type="image/svg+xml" href="../assets/branding/peaceout-logo-concept.svg" />
   <style>
     html, body {
       height: 100%;
@@ -127,7 +127,7 @@
   <div class="plaza-ui">
     <div class="plaza-topbar">
       <span>
-        <img src="shared/branding/peaceout-logo-concept.svg" class="plaza-logo" />
+        <img src="../assets/branding/peaceout-logo-concept.svg" class="plaza-logo" />
         <span class="plaza-username" id="plazaUsername">...</span>
         <span class="plaza-party-badge" id="partyBadge" style="display:none;"></span>
       </span>
@@ -222,7 +222,7 @@
       friends.forEach(f => {
         const el = document.createElement('li');
         el.className = 'plaza-friend-entry';
-        el.innerHTML = `<img class="plaza-avatar" src="${f.avatarUrl||'shared/branding/peaceout-logo-concept.svg'}"><span>${f.displayName||f.username}</span>`;
+        el.innerHTML = `<img class="plaza-avatar" src="${f.avatarUrl||'../assets/branding/peaceout-logo-concept.svg'}"><span>${f.displayName||f.username}</span>`;
         el.onclick = () => inviteToParty(f.id);
         list.appendChild(el);
       });
