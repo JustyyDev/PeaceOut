@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Discover</title>
-  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <link rel="icon" type="image/svg+xml" href="../assets/branding/peaceout-logo-concept.svg" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     html, body { min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #B8FFF9 0%, #FFDEE9 100%); color: #222;}
@@ -40,13 +40,13 @@
 <body>
   <div class="topbar">
     <div style="display:flex;align-items:center;">
-      <img src="shared/branding/peaceout-logo-concept.svg" class="logo" />
+      <img src="../assets/branding/peaceout-logo-concept.svg" class="logo" />
       <span class="welcome">Discover <span class="theme-badge" id="themeBadge"></span></span>
     </div>
     <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
   <nav class="site-nav">
-    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" />Home</a>
+    <a href="homepage.html"><img src="../assets/branding/peaceout-logo-concept.svg" />Home</a>
     <a href="upload.html">Upload</a>
     <a href="discover.html" class="active">Discover</a>
     <a href="about-us.html">About</a>
@@ -125,7 +125,7 @@
       return video.filename || 'https://placehold.co/640x360?text=Video';
     }
     function userAvatarUrl(user) {
-      return user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg';
+      return user.avatarUrl || '../assets/branding/peaceout-logo-concept.svg';
     }
 
     async function doSearch() {

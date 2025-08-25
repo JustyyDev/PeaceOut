@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>PeaceOut — Profile</title>
-  <link rel="icon" type="image/svg+xml" href="shared/branding/peaceout-logo-concept.svg" />
+  <link rel="icon" type="image/svg+xml" href="../assets/branding/peaceout-logo-concept.svg" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
     html, body { min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg,#B8FFF9 0%,#FFDEE9 100%);}
@@ -37,7 +37,7 @@
 </head>
 <body>
   <nav class="site-nav">
-    <a href="homepage.html"><img src="shared/branding/peaceout-logo-concept.svg" style="width:30px;vertical-align:middle;margin-right:0.5rem;" />Home</a>
+    <a href="homepage.html"><img src="../assets/branding/peaceout-logo-concept.svg" style="width:30px;vertical-align:middle;margin-right:0.5rem;" />Home</a>
     <a href="upload.html">Upload</a>
     <a href="discover.html">Discover</a>
     <a href="about-us.html">About</a>
@@ -99,7 +99,7 @@
       isOwnProfile = me && me.username === user.username;
       setTheme(user.theme);
       document.getElementById('profileHeader').innerHTML = `
-        <img class="avatar" src="${user.avatarUrl || 'shared/branding/peaceout-logo-concept.svg'}" />
+        <img class="avatar" src="${user.avatarUrl || '../assets/branding/peaceout-logo-concept.svg'}" />
         <div class="profile-meta">
           <div class="display-name">${user.displayName || user.username}</div>
           <div class="username">@${user.username}</div>
