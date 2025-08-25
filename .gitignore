@@ -9,6 +9,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -19,3 +20,18 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Database files (for development)
+backend/peaceout.db
+
+# Temporary files
+/tmp
+*.tmp
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# Local deployment configs (optional)
+deployment-config.local.js

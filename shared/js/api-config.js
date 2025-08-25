@@ -6,6 +6,11 @@
 
   // Determine the appropriate API base URL based on the environment
   function getApiBase() {
+    // Check for environment variable override (useful for different deployments)
+    if (typeof BACKEND_URL !== 'undefined' && BACKEND_URL) {
+      return BACKEND_URL.endsWith('/') ? BACKEND_URL + 'api/' : BACKEND_URL + '/api/';
+    }
+    
     // Check if we're running locally
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return 'http://localhost:4000/api/';
@@ -16,8 +21,37 @@
       return `${window.location.protocol}//${window.location.hostname}:4000/api/`;
     }
     
-    // Production deployment (GitHub Pages or custom domain)
-    return 'https://peaceout-backend.onrender.com/api/';
+    // Auto-detect common deployment platforms
+    const hostname = window.location.hostname;
+    
+    // Vercel deployment
+    if (hostname.includes('vercel.app')) {
+      return `${window.location.protocol}//${hostname}/api/`;
+    }
+    
+    // Netlify deployment
+    if (hostname.includes('netlify.app') || hostname.includes('netlify.com')) {
+      return `${window.location.protocol}//${hostname}/api/`;
+    }
+    
+    // Railway deployment
+    if (hostname.includes('railway.app')) {
+      return `${window.location.protocol}//${hostname}/api/`;
+    }
+    
+    // Heroku deployment
+    if (hostname.includes('herokuapp.com')) {
+      return `${window.location.protocol}//${hostname}/api/`;
+    }
+    
+    // GitHub Pages with custom backend URL (configurable)
+    if (hostname.includes('github.io')) {
+      // You can set this in a deployment-specific config file
+      return window.PEACEOUT_BACKEND_URL || 'https://your-backend-deployment.vercel.app/api/';
+    }
+    
+    // Fallback to same-origin for custom domains
+    return `${window.location.protocol}//${hostname}/api/`;
   }
 
   // Configuration object
