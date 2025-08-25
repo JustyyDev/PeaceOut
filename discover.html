@@ -65,8 +65,9 @@
     </div>
     <div class="results" id="results"></div>
   </div>
+  <script src="shared/js/api-config.js"></script>
   <script>
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const API_BASE = ApiConfig.BASE_URL;
     let searchType = 'all';
 
     const THEME_OVERRIDES = {
@@ -97,7 +98,7 @@
     }
     async function getCurrentUserAndSetTheme() {
       try {
-        const res = await fetch(API_BASE + 'me', { credentials: 'include' });
+        const res = await ApiConfig.get('me');
         const data = await res.json();
         if (res.ok && data && data.username) {
           setTheme(data.theme);
@@ -132,7 +133,7 @@
       const q = document.getElementById('searchInput').value.trim();
       if (!q) { document.getElementById('results').innerHTML = ''; return; }
       try {
-        const res = await fetch(`${API_BASE}discover?q=${encodeURIComponent(q)}&type=${searchType}`, { credentials: 'include' });
+        const res = await ApiConfig.get(`discover?q=${encodeURIComponent(q)}&type=${searchType}`);
         const data = await res.json();
         let html = '';
         if (searchType === 'all' || searchType === 'users') {
@@ -175,7 +176,7 @@
     }
     document.getElementById('logoutBtn').onclick = async function() {
       try {
-        await fetch(API_BASE + 'logout', { method: 'POST', credentials: 'include' });
+        await ApiConfig.post('logout');
       } finally {
         window.location.href = 'auth.html';
       }

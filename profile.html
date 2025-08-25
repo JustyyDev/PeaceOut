@@ -47,8 +47,9 @@
   </nav>
   <div class="profile-header" id="profileHeader"></div>
   <div class="videos-grid" id="videosGrid"></div>
+  <script src="shared/js/api-config.js"></script>
   <script>
-    const API_BASE = "https://peaceout-backend.onrender.com/api/";
+    const API_BASE = ApiConfig.BASE_URL;
     const urlParams = new URLSearchParams(window.location.search);
     const username = urlParams.get('u');
     let currentUsername = '';
@@ -84,7 +85,7 @@
 
     async function fetchProfile() {
       if (!username) return;
-      const res = await fetch(`${API_BASE}users/${encodeURIComponent(username)}`, { credentials: 'include' });
+      const res = await ApiConfig.get(`users/${encodeURIComponent(username)}`);
       if (!res.ok) {
         document.getElementById('profileHeader').innerHTML = "<div style='color:#FF3CAC;'>User not found.</div>";
         return;
@@ -93,7 +94,7 @@
       profileId = user.id;
       currentUsername = user.username;
       // Detect if this is own profile (for edit link)
-      const meRes = await fetch(API_BASE + 'me', { credentials: 'include' });
+      const meRes = await ApiConfig.get('me');
       let me = null;
       if (meRes.ok) me = await meRes.json();
       isOwnProfile = me && me.username === user.username;
@@ -136,15 +137,15 @@
     async function updateFollowBtn() {
       const btn = document.getElementById('followBtn');
       if (!btn) return;
-      const res = await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { credentials: 'include' });
+      const res = await ApiConfig.get(`follow/${encodeURIComponent(profileId)}`);
       const data = await res.json();
-      isFollowing = !!data.follows;
+      isFollowing = !!data.isFollowing;
       btn.textContent = isFollowing ? 'Unfollow' : 'Follow';
       btn.onclick = async function() {
         if (!isFollowing) {
-          await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { method: 'POST', credentials: 'include' });
+          await ApiConfig.post(`follow/${encodeURIComponent(profileId)}`);
         } else {
-          await fetch(`${API_BASE}follow/${encodeURIComponent(profileId)}`, { method: 'DELETE', credentials: 'include' });
+          await ApiConfig.delete(`follow/${encodeURIComponent(profileId)}`);
         }
         fetchProfile();
       };
