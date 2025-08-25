@@ -161,7 +161,7 @@
       return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
 
-    function openVideoModal(video) {
+    async function openVideoModal(video) {
       const modal = document.getElementById('videoModal');
       modal.innerHTML = `
         <div class="modal-bg" onclick="if(event.target===this)closeVideoModal()">
@@ -196,7 +196,7 @@
       setupCustomVideoUI(video);
     }
 
-    function setupCustomVideoUI(video) {
+    async function setupCustomVideoUI(video) {
       const v = document.getElementById('customVideo');
       const controls = document.getElementById('customControls');
       const playPauseBtn = document.getElementById('playPauseBtn');
@@ -247,33 +247,52 @@
       const dislikeBtn = document.getElementById('dislikeBtn');
       const likeCount = document.getElementById('likeCount');
       const dislikeCount = document.getElementById('dislikeCount');
+
+      // Set current reaction for this user
       let liked = false, disliked = false;
-      likeBtn.onclick = () => {
-        if (!liked) {
-          fetch(`${API_BASE}videos/${video.id}/like`, { method: 'POST', credentials: 'include' }).then(()=> {
-            likeCount.textContent = parseInt(likeCount.textContent)+1;
-            likeBtn.classList.add('liked');
-            liked = true;
-            // Remove dislike if already disliked
-            if (disliked) {
-              dislikeBtn.classList.remove('disliked');
-              disliked = false;
-            }
-          });
+      try {
+        const reactionRes = await fetch(`${API_BASE}videos/${video.id}/reaction`, { credentials: 'include' });
+        const reaction = await reactionRes.json();
+        liked = !!reaction.liked;
+        disliked = !!reaction.disliked;
+        if (liked) likeBtn.classList.add('liked'); else likeBtn.classList.remove('liked');
+        if (disliked) dislikeBtn.classList.add('disliked'); else dislikeBtn.classList.remove('disliked');
+      } catch {}
+
+      likeBtn.onclick = async () => {
+        const res = await fetch(`${API_BASE}videos/${video.id}/like`, { method: 'POST', credentials: 'include' });
+        const result = await res.json();
+        liked = result.liked;
+        disliked = result.disliked;
+        if (liked) {
+          likeBtn.classList.add('liked');
+          if (parseInt(likeCount.textContent) === 0) likeCount.textContent = 1;
+          else likeCount.textContent = parseInt(likeCount.textContent) + 1;
+          if (disliked) {
+            dislikeBtn.classList.remove('disliked');
+            if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+          }
+        } else {
+          likeBtn.classList.remove('liked');
+          if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
         }
       };
-      dislikeBtn.onclick = () => {
-        if (!disliked) {
-          fetch(`${API_BASE}videos/${video.id}/dislike`, { method: 'POST', credentials: 'include' }).then(()=> {
-            dislikeCount.textContent = parseInt(dislikeCount.textContent)+1;
-            dislikeBtn.classList.add('disliked');
-            disliked = true;
-            // Remove like if already liked
-            if (liked) {
-              likeBtn.classList.remove('liked');
-              liked = false;
-            }
-          });
+      dislikeBtn.onclick = async () => {
+        const res = await fetch(`${API_BASE}videos/${video.id}/dislike`, { method: 'POST', credentials: 'include' });
+        const result = await res.json();
+        liked = result.liked;
+        disliked = result.disliked;
+        if (disliked) {
+          dislikeBtn.classList.add('disliked');
+          if (parseInt(dislikeCount.textContent) === 0) dislikeCount.textContent = 1;
+          else dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+          if (liked) {
+            likeBtn.classList.remove('liked');
+            if (parseInt(likeCount.textContent) > 0) likeCount.textContent = parseInt(likeCount.textContent) - 1;
+          }
+        } else {
+          dislikeBtn.classList.remove('disliked');
+          if (parseInt(dislikeCount.textContent) > 0) dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
         }
       };
     }
